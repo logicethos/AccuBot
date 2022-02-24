@@ -19,15 +19,15 @@ service AccuBotAPI {
 
   rpc NodeGroupListGet(google.protobuf.Empty) returns (NodeGroupList);
   rpc NodeGroupSet(NodeGroup) returns (MsgReply);
-  rpc NodeGroupDelete(NodeGroup) returns (MsgReply);
+  rpc NodeGroupDelete(ID32) returns (MsgReply);
 
   rpc NodeListGet(google.protobuf.Empty) returns (NodeList);
   rpc NodeSet(Node) returns (MsgReply);
-  rpc NodeDelete(Node) returns (MsgReply);
+  rpc NodeDelete(ID32) returns (MsgReply);
 
   rpc UserListGet(google.protobuf.Empty) returns (UserList);
   rpc UserSet(User) returns (MsgReply);
-  rpc UserDelete(User) returns (MsgReply);
+  rpc UserDelete(ID32) returns (MsgReply);
 
   rpc DomainCertificateListGet(google.protobuf.Empty) returns (DomainCertificateList);
   rpc DomainCertificateSet(DomainCertificate) returns (MsgReply);
@@ -46,6 +46,7 @@ message MsgReply {
   }
   Status status = 1;
   string message = 2;
+  uint32 newID32 = 3;
 }
 
 message ID32 {

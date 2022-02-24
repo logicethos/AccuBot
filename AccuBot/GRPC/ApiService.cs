@@ -82,8 +82,8 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
                 existingNode.Name = node.Name;
                 existingNode.NodeGroup = node.NodeGroup;
             }
-            msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok };
         }
+        msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok, NewID32 = node.NodeID};
         File.WriteAllBytes(Path.Combine("path", "settings"),exitingNodes.ToByteArray());
         return Task.FromResult(msgReply);
     }
@@ -139,8 +139,8 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
                 existingUser.TwoFAtype = existingUser.TwoFAtype;
                 existingUser.TwoFAData = existingUser.TwoFAData;
             }
-            msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok };
         }
+        msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok, NewID32 = user.UserID };
         File.WriteAllBytes(Path.Combine("path", "users"),exitingUsers.ToByteArray());
         return Task.FromResult(msgReply);
     }
