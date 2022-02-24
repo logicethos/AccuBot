@@ -1,0 +1,162 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "AccuBotCommon.Proto";
+package AccuBot;
+
+
+// The greeting service definition.
+service AccuBotAPI {
+
+  rpc NotificationPolicyListGet(google.protobuf.Empty) returns (NotificationPolicyList);
+  rpc NotificationPolicySet(NotificationPolicy) returns (MsgReply);
+  rpc NotificationPolicyDelete(ID32) returns (MsgReply);
+
+  rpc NetworkListGet(google.protobuf.Empty) returns (NetworkList);
+  rpc NetworkSet(Network) returns (MsgReply);
+  rpc NetworkDelete(ID32) returns (MsgReply);
+
+  rpc NodeGroupListGet(google.protobuf.Empty) returns (NodeGroupList);
+  rpc NodeGroupSet(NodeGroup) returns (MsgReply);
+  rpc NodeGroupDelete(NodeGroup) returns (MsgReply);
+
+  rpc NodeListGet(google.protobuf.Empty) returns (NodeList);
+  rpc NodeSet(Node) returns (MsgReply);
+  rpc NodeDelete(Node) returns (MsgReply);
+
+  rpc UserListGet(google.protobuf.Empty) returns (UserList);
+  rpc UserSet(User) returns (MsgReply);
+  rpc UserDelete(User) returns (MsgReply);
+
+  rpc DomainCertificateListGet(google.protobuf.Empty) returns (DomainCertificateList);
+  rpc DomainCertificateSet(DomainCertificate) returns (MsgReply);
+  rpc DomainCertificateDelete(DomainCertificate) returns (MsgReply);
+
+  rpc SettingsGet(google.protobuf.Empty) returns (Settings);
+  rpc SettingsSet(Settings) returns (MsgReply);
+
+}
+
+message MsgReply {
+  enum Status
+  {
+    fail = 0;
+    ok = 1;
+  }
+  Status status = 1;
+  string message = 2;
+}
+
+message ID32 {
+  uint32 ID = 1;
+}
+
+message User
+{
+    enum twoFAtype  //A project for later
+    {
+      Yubikey = 0;  
+      GoogleAuth = 1;
+    }
+  
+    uint32    UserID    = 1;
+    string    Name      = 2;
+    string    Password  = 3;
+    twoFAtype TwoFAtype = 4;
+    string    TwoFAData = 5;
+    string    Email     = 6;
+    string    Tel       = 7;
+    string    Discord   = 8;
+}
+
+message UserList
+{
+   repeated User users = 1;
+}
+
+message NotificationPolicy
+{
+    uint32    NotifictionID   = 1;    //do not display or set
+    string    Name            = 2;
+    int32     Discord         = 3;    // -1 = off, Delay 0 - 999 Seconds
+    int32     Call            = 4;    // -1 = off, Delay 0 - 999 Seconds
+}
+message NotificationPolicyList
+{
+    repeated NotificationPolicy NotificationPolicyList = 1;
+}
+
+message Network
+{
+    uint32    NetworkID       = 1;   //do not display or set
+    string    Name            = 2;
+    uint32    BlockTime       = 3;    //Seconds
+    uint32    StalledAfter    = 4;
+    uint32    NotifictionID   = 5;  //See above
+}
+message NetworkList
+{
+    repeated Network network     = 1;
+}
+
+message NodeGroup
+{
+  uint32    NodeGroupID            = 1;
+  string    Name                   = 2;
+  uint32    NetworkID              = 3;  //See Network
+  uint32    PingNotifictionID      = 4;
+  uint32    HeightNotifictionID    = 5;
+  uint32    LatencyNotifictionID   = 6;
+}
+message NodeGroupList
+{
+    repeated NodeGroup nodeGroup      = 1;
+}
+
+message Node
+{
+  uint32  NodeID       = 1;
+  string  NodeGroup    = 2;
+  string  Name         = 3;
+  string  Host         = 4;
+  bool    Monitor      = 5;
+}
+message NodeList
+{
+    repeated Node nodes      = 1;
+}
+
+
+
+message DomainCertificate
+{
+    string Domain     = 1;
+    bool Monitor      = 2;
+}
+message DomainCertificateList
+{
+    repeated DomainCertificate  domainCertificate    = 1;
+}
+
+message Settings
+{
+    string BotName                     = 1;
+    string DiscordClientID             = 2;
+    string DiscordToken                = 3;
+    uint64 AccumulateOperatorAlertsCh  = 4;
+    string DiscordAlertsChannel        = 5;
+    string SIPUsername                 = 6;             
+    string SIPPassword                 = 7;
+    string SIPHost                     = 8;
+    string SIPCallingNumber            = 9;
+    string TwimletURL                  = 10;
+    uint32 AlarmOffWarningMinutes      = 11;
+    uint32 LatencyTriggerMultiplier    = 12;
+    string BotCommandPrefix            = 13;
+    string EmailSMTPHost               = 14;
+    uint32 EmailSMTPPort               = 15;
+    string EmailUsername               = 16;
+    string EmailPassword               = 17;
+    string EmailFromAddress            = 18;
+}
