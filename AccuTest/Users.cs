@@ -6,7 +6,7 @@ using Grpc.Core;
 namespace AccuTest;
 
 
-static public class TestUsers
+static public class Users
 {
     public static void Test()
     {

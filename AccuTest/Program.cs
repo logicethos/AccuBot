@@ -3,6 +3,7 @@
 
 using AccuTest;
 using Grpc.Net.Client;
+using NotificationPolicy = AccuBotCommon.Proto.NotificationPolicy;
 
 namespace AccuBot
 {
@@ -14,7 +15,9 @@ namespace AccuBot
         {
             GRPCClient = new AccuBotCommon.AccuBotClient("https://localhost:5001");
             GRPCClient.Connect();
-            TestUsers.Test();
+            Users.Test();
+            Networks.Test();
+            NotificationPolicys.Test();
         }
     }
 }
