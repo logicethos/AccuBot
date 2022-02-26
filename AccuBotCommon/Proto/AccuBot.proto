@@ -31,7 +31,7 @@ service AccuBotAPI {
 
   rpc DomainCertificateListGet(google.protobuf.Empty) returns (DomainCertificateList);
   rpc DomainCertificateSet(DomainCertificate) returns (MsgReply);
-  rpc DomainCertificateDelete(DomainCertificate) returns (MsgReply);
+  rpc DomainCertificateDelete(ID32) returns (MsgReply);
 
   rpc SettingsGet(google.protobuf.Empty) returns (Settings);
   rpc SettingsSet(Settings) returns (MsgReply);
@@ -132,8 +132,9 @@ message NodeList
 
 message DomainCertificate
 {
-    string Domain     = 1;
-    bool Monitor      = 2;
+    uint32 DomainCertificateID = 1;
+    string Domain     = 2;
+    bool   Monitor      = 3;
 }
 message DomainCertificateList
 {
