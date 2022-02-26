@@ -14,13 +14,13 @@ namespace AccuBot.GRPC;
 public class ApiService : AccuBotAPI.AccuBotAPIBase
 {
     public static ApiService instance;
-
+    string path = "data";
     public override Task<Settings> SettingsGet(Empty request, ServerCallContext context)
     {
         Settings settings;
-        if (File.Exists(Path.Combine("path","settings")))
+        if (File.Exists(Path.Combine(path,"settings")))
         {  //Read from file
-            settings = Settings.Parser.ParseFrom(File.ReadAllBytes(Path.Combine("path", "settings")));
+            settings = Settings.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(path, "settings")));
         }
         else
         {   //Fill with defaults
@@ -52,7 +52,7 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
     public override Task<MsgReply> SettingsSet(Settings node, ServerCallContext context)
     {
         // Write to file
-        File.WriteAllBytes(Path.Combine("path", "settings"),node.ToByteArray());
+        File.WriteAllBytes(Path.Combine(path, "settings"),node.ToByteArray());
         var msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok };
         return Task.FromResult(msgReply);
     }
@@ -84,16 +84,16 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
             }
         }
         msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok, NewID32 = node.NodeID};
-        File.WriteAllBytes(Path.Combine("path", "settings"),exitingNodes.ToByteArray());
+        File.WriteAllBytes(Path.Combine(path, "settings"),exitingNodes.ToByteArray());
         return Task.FromResult(msgReply);
     }
     
     public override Task<NodeList> NodeListGet(Empty request, ServerCallContext context)
     {
         NodeList nodelist = null;
-        if (File.Exists(Path.Combine("path","nodes")))
+        if (File.Exists(Path.Combine(path,"nodes")))
         {  //Read from file
-            var nodes = Settings.Parser.ParseFrom(File.ReadAllBytes(Path.Combine("path", "nodes")));
+            var nodes = Settings.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(path, "nodes")));
         }
         else
         {
@@ -123,7 +123,7 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
         else
         {
             existingNodes.Nodes.Remove(node);
-            File.WriteAllBytes(Path.Combine("path", "nodes"),existingNodes.ToByteArray());
+            File.WriteAllBytes(Path.Combine(path, "nodes"),existingNodes.ToByteArray());
             msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok};
         }
         return Task.FromResult(msgReply);
@@ -160,16 +160,16 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
             }
         }
         msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok, NewID32 = user.UserID };
-        File.WriteAllBytes(Path.Combine("path", "users"),exitingUsers.ToByteArray());
+        File.WriteAllBytes(Path.Combine(path, "users"),exitingUsers.ToByteArray());
         return Task.FromResult(msgReply);
     }
 
     public override Task<UserList> UserListGet(Empty request, ServerCallContext context)
     {
         UserList userlist = null;
-        if (File.Exists(Path.Combine("path","userlist")))
+        if (File.Exists(Path.Combine(path,"users")))
         {  //Read from file
-            userlist = UserList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine("path", "userlist")));
+            userlist = UserList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(path, "users")));
         }
         else
         {
@@ -203,7 +203,7 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
         else
         {
             existingUsers.Users.Remove(user);
-            File.WriteAllBytes(Path.Combine("path", "userlist"),existingUsers.ToByteArray());
+            File.WriteAllBytes(Path.Combine(path, "users"),existingUsers.ToByteArray());
             msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok};
         }
         return Task.FromResult(msgReply);
@@ -236,16 +236,16 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
             }
         }
         msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok, NewID32 = network.NetworkID};
-        File.WriteAllBytes(Path.Combine("path", "networklist"),exitingNetworks.ToByteArray());
+        File.WriteAllBytes(Path.Combine(path, "networklist"),exitingNetworks.ToByteArray());
         return Task.FromResult(msgReply);
     }
 
     public override Task<NetworkList> NetworkListGet(Empty request, ServerCallContext context)
     {
         NetworkList networklist = null;
-        if (File.Exists(Path.Combine("path","networklist")))
+        if (File.Exists(Path.Combine(path,"networklist")))
         {  //Read from file
-            networklist = NetworkList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine("path", "networklist")));
+            networklist = NetworkList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(path, "networklist")));
         }
         else
         {
@@ -283,7 +283,7 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
         else
         {
             existingNetworks.Network.Remove(user);
-            File.WriteAllBytes(Path.Combine("path", "networklist"),existingNetworks.ToByteArray());
+            File.WriteAllBytes(Path.Combine(path, "networklist"),existingNetworks.ToByteArray());
             msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok};
         }
         return Task.FromResult(msgReply);
@@ -318,16 +318,16 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
             }
         }
         msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok, NewID32 = group.NetworkID};
-        File.WriteAllBytes(Path.Combine("path", "nodeGrouplist"),exitingNodeGroup.ToByteArray());
+        File.WriteAllBytes(Path.Combine(path, "nodeGrouplist"),exitingNodeGroup.ToByteArray());
         return Task.FromResult(msgReply);
     }
 
     public override Task<NodeGroupList> NodeGroupListGet(Empty request, ServerCallContext context)
     {
         NodeGroupList groupList;
-        if (File.Exists(Path.Combine("path","networklist")))
+        if (File.Exists(Path.Combine(path,"networklist")))
         {  //Read from file
-            groupList = NodeGroupList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine("path", "nodeGrouplist")));
+            groupList = NodeGroupList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(path, "nodeGrouplist")));
         }
         else
         {
@@ -367,7 +367,7 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
         else
         {
             existingNodeGroup.NodeGroup.Remove(nodegroup);
-            File.WriteAllBytes(Path.Combine("path", "nodeGrouplist"),existingNodeGroup.ToByteArray());
+            File.WriteAllBytes(Path.Combine(path, "nodeGrouplist"),existingNodeGroup.ToByteArray());
             msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok};
         }
         return Task.FromResult(msgReply);
@@ -376,9 +376,9 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
     public override Task<DomainCertificateList> DomainCertificateListGet(Empty request, ServerCallContext context)
     {
         DomainCertificateList domainCertificateList;
-        if (File.Exists(Path.Combine("path","domainCertificateList")))
+        if (File.Exists(Path.Combine(path,"domainCertificateList")))
         {  //Read from file
-            domainCertificateList = DomainCertificateList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine("path", "domainCertificateList")));
+            domainCertificateList = DomainCertificateList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(path, "domainCertificateList")));
         }
         else
         {
@@ -419,7 +419,7 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
             }
         }
         msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok, NewID32 = domainCertificate.DomainCertificateID};
-        File.WriteAllBytes(Path.Combine("path", "domainCertificateList"),exitingDomainCertificate.ToByteArray());
+        File.WriteAllBytes(Path.Combine(path, "domainCertificateList"),exitingDomainCertificate.ToByteArray());
         return Task.FromResult(msgReply);
     }
 
@@ -436,7 +436,7 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
         else
         {
             existingDomainCertificate.DomainCertificate.Remove(domainCertificate);
-            File.WriteAllBytes(Path.Combine("path", "domainCertificateList"),existingDomainCertificate.ToByteArray());
+            File.WriteAllBytes(Path.Combine(path, "domainCertificateList"),existingDomainCertificate.ToByteArray());
             msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok};
         }
         return Task.FromResult(msgReply);
@@ -445,9 +445,9 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
     public override Task<NotificationPolicyList> NotificationPolicyListGet(Empty request, ServerCallContext context)
     {
         NotificationPolicyList notificationPolicyList;
-        if (File.Exists(Path.Combine("path","notificationPolicyList")))
+        if (File.Exists(Path.Combine(path,"notificationPolicyList")))
         {  //Read from file
-            notificationPolicyList = NotificationPolicyList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine("path", "notificationPolicyList")));
+            notificationPolicyList = NotificationPolicyList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(path, "notificationPolicyList")));
         }
         else
         {
@@ -511,7 +511,7 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
             }
         }
         msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok, NewID32 = notificationPolicy.NotifictionID};
-        File.WriteAllBytes(Path.Combine("path", "notificationPolicyList"),exitingNotifiactionPolicy.ToByteArray());
+        File.WriteAllBytes(Path.Combine(path, "notificationPolicyList"),exitingNotifiactionPolicy.ToByteArray());
         return Task.FromResult(msgReply);
     }
 
@@ -528,7 +528,7 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
         else
         {
             existingNotificationPolicy.NotificationPolicyList_.Remove(notificationPolicy);
-            File.WriteAllBytes(Path.Combine("path", "notificationPolicyList"),existingNotificationPolicy.ToByteArray());
+            File.WriteAllBytes(Path.Combine(path, "notificationPolicyList"),existingNotificationPolicy.ToByteArray());
             msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok};
         }
         return Task.FromResult(msgReply);

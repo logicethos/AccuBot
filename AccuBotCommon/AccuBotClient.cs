@@ -15,11 +15,23 @@ namespace AccuBotCommon
         private GrpcChannelOptions Options;
         public AccuBotAPI.AccuBotAPIClient API { get; private set; }
         
-        public AccuBotClient(string host = "https://localhost:5001")
+        public AccuBotClient(string host = "https://localhost:5001", GrpcChannelOptions options = null)
         {
-            HostURL = host;
-            Options = new GrpcChannelOptions();
+            if (options == null)
+            {
+                options = new GrpcChannelOptions();
 
+                if (host.Contains("localhost") || host.Contains("127.0.0."))  //Accept self
+                {
+                    options.HttpHandler = new HttpClientHandler()
+                    {
+                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    };
+                }
+            }
+
+            HostURL = host;
+            Options = options;
         }
 
         public bool Connect()

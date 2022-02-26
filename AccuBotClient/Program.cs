@@ -12,7 +12,8 @@ namespace AccuBotClient
         public static async Task Main(string[] args)
         {
             GRPCClient = new AccuBotCommon.AccuBotClient("https://localhost:5001");
-                
+            GRPCClient.Connect();
+
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
