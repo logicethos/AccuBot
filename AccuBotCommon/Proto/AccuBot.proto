@@ -53,19 +53,25 @@ message ID32 {
   uint32 ID = 1;
 }
 
+message Authentication  //A project for later
+{
+    enum twoFAtype  
+  {
+    Yubikey = 0;
+    GoogleAuth = 1;
+  }
+
+  uint32    UserID    = 1;
+  string    Password  = 2;
+  twoFAtype TwoFAtype = 3;
+  string    TwoFAData = 4;
+}
+
+
 message User
 {
-    enum twoFAtype  //A project for later
-    {
-      Yubikey = 0;  
-      GoogleAuth = 1;
-    }
-  
     uint32    UserID    = 1;
     string    Name      = 2;
-    string    Password  = 3;
-    twoFAtype TwoFAtype = 4;
-    string    TwoFAData = 5;
     string    Email     = 6;
     string    Tel       = 7;
     string    Discord   = 8;

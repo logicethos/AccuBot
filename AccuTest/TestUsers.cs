@@ -45,9 +45,6 @@ static public class TestUsers
         {
             UserID = 0, //Set as zero when adding.  Or the original UserID when updating
             Name = "Fred Smith",
-            Password = "abcdef",  //Need to hash this at some point. We do security at a later date.
-            TwoFAtype = User.Types.twoFAtype.Yubikey,
-            //  TwoFAData = String.Empty,
             Email = "fred@email.com",
             Tel = "+44 12345678",
             Discord = "@fred"

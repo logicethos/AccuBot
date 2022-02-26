@@ -150,13 +150,10 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
             else
             {
                 existingUser.Name = user.Name;
-                existingUser.Password = user.Password;
                 existingUser.Name = user.Name;
                 existingUser.Discord = user.Discord;
                 existingUser.Email = existingUser.Email;
                 existingUser.Tel = existingUser.Tel;
-                existingUser.TwoFAtype = existingUser.TwoFAtype;
-                existingUser.TwoFAData = existingUser.TwoFAData;
             }
         }
         msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok, NewID32 = user.UserID };
@@ -178,9 +175,6 @@ public class ApiService : AccuBotAPI.AccuBotAPIBase
             {
                 UserID = 1,
                 Name = "John",
-                Password = "wewefwef",
-                TwoFAtype = User.Types.twoFAtype.Yubikey,
-                //TwoFAData ;
                 Email = "john@myemail.com",
                 Tel = "+44 123456789",
                 Discord = "@john"
