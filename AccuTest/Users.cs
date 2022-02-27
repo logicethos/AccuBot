@@ -1,4 +1,4 @@
-using AccuBot;
+using AccuTest;
 using AccuBotCommon.Proto;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
