@@ -124,7 +124,7 @@ message NodeGroupList
 message Node
 {
   uint32  NodeID       = 1;
-  string  NodeGroup    = 2;
+  uint32  NodeGroupID  = 2;
   string  Name         = 3;
   string  Host         = 4;
   bool    Monitor      = 5;
