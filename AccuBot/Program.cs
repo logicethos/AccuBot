@@ -38,10 +38,12 @@ namespace AccuTest
                     webBuilder.ConfigureKestrel(options =>
                     {
                         // Setup a HTTP/2 endpoint without TLS.
-                        //options.ListenLocalhost(5000, o => o.Protocols = HttpProtocols.Http2);
-                    //    options.ListenLocalhost(5001, o => o.Protocols = HttpProtocols.Http2);
+              //          options.ListenLocalhost(5000, o => o.Protocols = HttpProtocols.Http2);
+                        
                     });
-                    webBuilder.UseStartup<Startup>()
+                    webBuilder.UseStartup<Startup>();
+                        
+                        /*
                         .ConfigureKestrel(kestrelServerOptions => {
                         kestrelServerOptions.ConfigureHttpsDefaults(opt =>
                         {
@@ -53,7 +55,8 @@ namespace AccuTest
                                 return true; //certificate.Issuer == serverCert.Issuer;
                             };
                         });
-                    });
+                    
+                    }); */
                 });
     }
 }

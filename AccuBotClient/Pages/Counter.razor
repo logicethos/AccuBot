@@ -1,4 +1,7 @@
 @page "/counter"
+@using AccuBotCommon.Proto
+@using Google.Protobuf.WellKnownTypes
+@inject AccuBotAPI.AccuBotAPIClient AccuBotApiClient
 
 <PageTitle>Counter</PageTitle>
 
@@ -8,12 +11,28 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+@foreach (var user in users.Users) 
+	{ 
+		<tr> 
+		<td>Name @user.Name</td> 
+		<td>Discord @user.Discord</td> 
+		<td>Tel @user.Tel</td> 
+		</tr> 
+	} 
+
+
 @code {
     private int currentCount = 0;
 
     private void IncrementCount()
     {
         currentCount++;
+    }
+    private UserList users;
+    protected override async Task OnInitializedAsync()
+    {
+        users = await AccuBotApiClient.UserListGetAsync(new Empty());
+        
     }
 
 }

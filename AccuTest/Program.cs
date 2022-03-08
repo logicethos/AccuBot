@@ -13,7 +13,7 @@ namespace AccuTest
         
         public static void Main(string[] args)
         {
-            GRPCClient = new AccuBotCommon.AccuBotClient("https://localhost:5001");
+            GRPCClient = new AccuBotCommon.AccuBotClient("http://localhost:5000");
             GRPCClient.Connect();
           //  Users.Test();
           //  Networks.Test();

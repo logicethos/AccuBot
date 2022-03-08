@@ -29,6 +29,15 @@ namespace AccuTest
                     //"landing page" of the application.
               //      options.Conventions.AddPageRoute("/wwwroot/Index.razor", "");
                 });
+            
+            services.AddCors(o => o.AddPolicy("AllowAll", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
+            }));
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,6 +49,8 @@ namespace AccuTest
             }
 
             app.UseRouting();
+            app.UseGrpcWeb(); 
+            app.UseCors();
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -48,7 +59,7 @@ namespace AccuTest
             {
                 endpoints.MapRazorPages();
                 //endpoints.MapControllers();
-                endpoints.MapGrpcService<ApiService>();
+                endpoints.MapGrpcService<ApiService>().EnableGrpcWeb().RequireCors("AllowAll");
                // endpoints.MapFallbackToPage("/Index.razor");
                 
 
