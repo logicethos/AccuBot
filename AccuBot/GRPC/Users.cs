@@ -15,7 +15,7 @@ public partial class ApiService
 
     public override Task<MsgReply> UserSet(User user, ServerCallContext context)
     {
-        MsgReply msgReply = null;
+        MsgReply msgReply;
         var exitingUsers = UserListGet(null, null).Result; //get existing user.
 
         if (user.UserID == 0) //id not set, so new node
@@ -48,7 +48,7 @@ public partial class ApiService
 
     public override Task<UserList> UserListGet(Empty request, ServerCallContext context)
     {
-        UserList userlist = null;
+        UserList userlist;
         if (File.Exists(Path.Combine(path, "users")))
         {
             //Read from file
@@ -72,7 +72,7 @@ public partial class ApiService
 
     public override Task<MsgReply> UserDelete(ID32 userID, ServerCallContext context)
     {
-        MsgReply msgReply = null;
+        MsgReply msgReply;
         var existingUsers = UserListGet(null, null).Result; //get existing nodes.
 
         var user = existingUsers.Users.FirstOrDefault(x => x.UserID == userID.ID);

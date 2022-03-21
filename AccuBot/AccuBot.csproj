@@ -45,20 +45,14 @@
       <None Include="DiscordBot\Commands\clsUsers.cs" />
       <Compile Remove="DiscordBot\Commands\clsVersion.cs" />
       <None Include="DiscordBot\Commands\clsVersion.cs" />
-      <Compile Remove="DiscordBot\clsAlarm.cs" />
-      <None Include="DiscordBot\clsAlarm.cs" />
       <Compile Remove="DiscordBot\clsAlarmManager.cs" />
       <None Include="DiscordBot\clsAlarmManager.cs" />
-      <Compile Remove="DiscordBot\clsBotClient.cs" />
-      <None Include="DiscordBot\clsBotClient.cs" />
-      <Compile Remove="DiscordBot\clsCommands.cs" />
-      <None Include="DiscordBot\clsCommands.cs" />
       <Compile Remove="DiscordBot\clsEmail.cs" />
       <None Include="DiscordBot\clsEmail.cs" />
-      <Compile Remove="DiscordBot\clsExtenstions.cs" />
-      <None Include="DiscordBot\clsExtenstions.cs" />
       <Compile Remove="DiscordBot\clsSSLCertMonitor.cs" />
       <None Include="DiscordBot\clsSSLCertMonitor.cs" />
+      <Compile Remove="DiscordBot\clsAlarm.cs" />
+      <None Include="DiscordBot\clsAlarm.cs" />
     </ItemGroup>
 
 </Project>

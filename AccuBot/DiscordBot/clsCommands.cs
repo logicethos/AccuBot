@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Text;
 using AccuBot.DiscordBot.Commands;
 using AccuTest;
+using Discord.WebSocket;
 
 namespace AccuBot.DiscordBot
 {
@@ -23,22 +24,22 @@ namespace AccuBot.DiscordBot
         }
         
         
-        public void DiscordMessage(MessageCreateEventArgs e)
+        public void DiscordMessage(SocketMessage e)
         {
         
             String Message;
             try
             {
-                if (String.IsNullOrEmpty(e.Message.Content)) return;
+                if (String.IsNullOrEmpty(e.Content)) return;
                 
                 if (String.IsNullOrEmpty(Program.Settings.BotCommandPrefix))
                 {
-                    Message = e.Message.Content;
+                    Message = e.Content;
                 }
-                else if (e.Message.Content.StartsWith(Program.Settings.BotCommandPrefix) &&
-                        (e.Message.Content.Length > Program.Settings.BotCommandPrefix.Length))
+                else if (e.Content.StartsWith(Program.Settings.BotCommandPrefix) &&
+                        (e.Content.Length > Program.Settings.BotCommandPrefix.Length))
                 {
-                    Message = e.Message.Content.Substring(Program.Settings.BotCommandPrefix.Length);
+                    Message = e.Content.Substring(Program.Settings.BotCommandPrefix.Length);
                 }
                 else
                 {

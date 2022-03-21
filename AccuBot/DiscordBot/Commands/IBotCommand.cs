@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Discord.WebSocket;
 
 
 namespace AccuBot.DiscordBot.Commands
@@ -10,9 +11,8 @@ namespace AccuBot.DiscordBot.Commands
         String[] MatchCommand {get;}
         String[] MatchSubstring {get;}
         Regex[] MatchRegex {get;}
-
     
-       // void Run(MessageCreateEventArgs e);
+        void Run(SocketMessage e);
         
         void HelpString (ref clsColumnDisplay columnDisplay);
         

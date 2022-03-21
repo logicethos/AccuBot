@@ -19,6 +19,7 @@ namespace AccuTest
     {
         public static AccuBotCommon.Proto.Settings Settings;
         public static string DataPath = "data";
+        static public DateTime AppStarted = DateTime.UtcNow;
         
         public static void Main(string[] args)
         {
@@ -33,8 +34,8 @@ namespace AccuTest
                 Settings = new Settings()
                 {
                     BotName = "My Bot",
-                    DiscordClientID = "#123",
-                    DiscordToken = "uiygweduyg",
+                    DiscordClientID = "955503128705392660",
+                    DiscordToken = "OTU1NTAzMTI4NzA1MzkyNjYw.Yjinog.ltCgJ9c_-SXlLEDPR7khzTSJBa0",
                     AccumulateOperatorAlertsCh = 443025488655417364,
                     DiscordAlertsChannel = "#Bot-Alerts",
                     SIPUsername = "",
