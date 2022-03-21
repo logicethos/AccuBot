@@ -18,10 +18,41 @@ namespace AccuTest
     public class Program
     {
         public static AccuBotCommon.Proto.Settings Settings;
+        public static string DataPath = "data";
         
         public static void Main(string[] args)
         {
-            Directory.CreateDirectory("data");
+            Directory.CreateDirectory(DataPath);
+            if (File.Exists(Path.Combine(DataPath,"settings")))
+            {  //Read from file
+                Settings = Settings.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(DataPath, "settings.dat")));
+            }
+            else
+            {
+                //Fill with defaults
+                Settings = new Settings()
+                {
+                    BotName = "My Bot",
+                    DiscordClientID = "#123",
+                    DiscordToken = "uiygweduyg",
+                    AccumulateOperatorAlertsCh = 443025488655417364,
+                    DiscordAlertsChannel = "#Bot-Alerts",
+                    SIPUsername = "",
+                    SIPPassword = "",
+                    SIPHost = "",
+                    SIPCallingNumber = "",
+                    TwimletURL = "",
+                    AlarmOffWarningMinutes = 30,
+                    LatencyTriggerMultiplier = 2,
+                    BotCommandPrefix = "!",
+                    EmailSMTPHost = "",
+                    EmailSMTPPort = 587,
+                    EmailUsername = "",
+                    EmailPassword = "",
+                    EmailFromAddress = "",
+                };
+            }
+
             CreateHostBuilder(args).Build().Run();
 
             
