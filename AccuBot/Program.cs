@@ -17,6 +17,8 @@ namespace AccuTest
 {
     public class Program
     {
+        public static AccuBotCommon.Proto.Settings Settings;
+        
         public static void Main(string[] args)
         {
             Directory.CreateDirectory("data");
