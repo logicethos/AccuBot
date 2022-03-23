@@ -14,14 +14,14 @@ public partial class ApiService
 {
     public override Task<Settings> SettingsGet(Empty request, ServerCallContext context)
     {
-        Settings settings;
         return Task.FromResult(Program.Settings);
     }
 
-    public override Task<MsgReply> SettingsSet(Settings node, ServerCallContext context)
+    public override Task<MsgReply> SettingsSet(Settings settings, ServerCallContext context)
     {
+        Program.Settings = settings;
         // Write to file
-        File.WriteAllBytes(Path.Combine(Program.DataPath, "settings.dat"),node.ToByteArray());
+        File.WriteAllBytes(Path.Combine(Program.DataPath, "settings.dat"),settings.ToByteArray());
         var msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok };
         return Task.FromResult(msgReply);
     }
