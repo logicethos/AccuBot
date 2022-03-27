@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Discord.Net" Version="3.4.1" />
+      <PackageReference Include="DSharpPlus" Version="4.1.0" />
       <PackageReference Include="Grpc.AspNetCore" Version="2.42.0" />
       <PackageReference Include="Grpc.AspNetCore.Web" Version="2.43.0" />
     </ItemGroup>
@@ -29,8 +29,6 @@
       <None Include="DiscordBot\Commands\clsDiscord.cs" />
       <Compile Remove="DiscordBot\Commands\clsEmail.cs" />
       <None Include="DiscordBot\Commands\clsEmail.cs" />
-      <Compile Remove="DiscordBot\Commands\clsHelp.cs" />
-      <None Include="DiscordBot\Commands\clsHelp.cs" />
       <Compile Remove="DiscordBot\Commands\clsListNodes.cs" />
       <None Include="DiscordBot\Commands\clsListNodes.cs" />
       <Compile Remove="DiscordBot\Commands\clsMTR.cs" />

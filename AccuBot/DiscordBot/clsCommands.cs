@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Text;
 using AccuBot.DiscordBot.Commands;
-using AccuTest;
-using Discord.WebSocket;
+using DSharpPlus.EventArgs;
 
 namespace AccuBot.DiscordBot
 {
@@ -24,22 +23,22 @@ namespace AccuBot.DiscordBot
         }
         
         
-        public void DiscordMessage(SocketMessage e)
+        public void DiscordMessage(MessageCreateEventArgs e)
         {
         
             String Message;
             try
             {
-                if (String.IsNullOrEmpty(e.Content)) return;
+                if (String.IsNullOrEmpty(e.Message.Content)) return;
                 
                 if (String.IsNullOrEmpty(Program.Settings.BotCommandPrefix))
                 {
-                    Message = e.Content;
+                    Message = e.Message.Content;
                 }
-                else if (e.Content.StartsWith(Program.Settings.BotCommandPrefix) &&
-                        (e.Content.Length > Program.Settings.BotCommandPrefix.Length))
+                else if (e.Message.Content.StartsWith(Program.Settings.BotCommandPrefix) &&
+                        (e.Message.Content.Length > Program.Settings.BotCommandPrefix.Length))
                 {
-                    Message = e.Content.Substring(Program.Settings.BotCommandPrefix.Length);
+                    Message = e.Message.Content.Substring(Program.Settings.BotCommandPrefix.Length);
                 }
                 else
                 {
@@ -72,9 +71,10 @@ namespace AccuBot.DiscordBot
         public void LoadCommandClasses()
         {
             var type = typeof(IBotCommand);
+            var test = AppDomain.CurrentDomain.GetAssemblies();
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
-                .Where(p => type.IsAssignableFrom(p)&& !p.IsInterface);
+                .Where(p => type.IsAssignableFrom(p) && !p.IsInterface);
                 
             foreach (var commandType in types)
             {

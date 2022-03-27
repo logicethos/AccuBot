@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Discord.WebSocket;
+using DSharpPlus.EventArgs;
 
 
 namespace AccuBot.DiscordBot.Commands
 {
-    
     public interface IBotCommand
     {
         String[] MatchCommand {get;}
         String[] MatchSubstring {get;}
         Regex[] MatchRegex {get;}
     
-        void Run(SocketMessage e);
+        void Run(MessageCreateEventArgs e);
         
         void HelpString (ref clsColumnDisplay columnDisplay);
         

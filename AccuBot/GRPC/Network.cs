@@ -8,7 +8,7 @@ using Google.Protobuf.WellKnownTypes;
 using System.IO;
 using Google.Protobuf;
 
-namespace AccuTest.GRPC;
+namespace AccuBot.GRPC;
 
 public partial class ApiService
 {

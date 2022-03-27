@@ -27,7 +27,6 @@ namespace AccuBot.DiscordBot.Commands
                {
                     e.Channel.SendMessageAsync($"```{text}```");
                }
-                e.Channel.SendMessageAsync($"Settings: {Program.BotURL}");
             }
             catch (Exception ex)
             {
