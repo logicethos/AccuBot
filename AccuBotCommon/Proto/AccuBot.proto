@@ -2,11 +2,10 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-option csharp_namespace = "AccuBotCommon.Proto";
+option csharp_namespace = "Proto.API";
 package AccuBot;
 
 
-// The greeting service definition.
 service AccuBotAPI {
 
   rpc NotificationPolicyListGet(google.protobuf.Empty) returns (NotificationPolicyList);
@@ -36,6 +35,10 @@ service AccuBotAPI {
   rpc SettingsGet(google.protobuf.Empty) returns (Settings);
   rpc SettingsSet(Settings) returns (MsgReply);
 
+  //Dashboard
+  rpc NetworkStatusStream(StreamRequest) returns (stream NetworkStatus);
+  rpc NodeStatusStream(StreamRequest) returns (stream NodeStatus);
+  
 }
 
 message MsgReply {
@@ -52,6 +55,12 @@ message MsgReply {
 message ID32 {
   uint32 ID = 1;
 }
+
+message StreamRequest
+{
+  uint32 Seconds = 1;
+}
+
 
 message Authentication  //A project for later
 {
@@ -98,13 +107,20 @@ message Network
 {
     uint32    NetworkID       = 1;   //do not display or set
     string    Name            = 2;
-    uint32    BlockTime       = 3;    //Seconds
+    uint32    BlockTime       = 3;   //Seconds
     uint32    StalledAfter    = 4;
-    uint32    NotifictionID   = 5;  //See above
+    uint32    NotifictionID   = 5;   //See above
 }
 message NetworkList
 {
     repeated Network network     = 1;
+}
+
+message NetworkStatus
+{
+    uint32    NetworkID       = 1;   //do not display or set
+    uint64    Height          = 2;
+    float     AverageTime     = 3;
 }
 
 message NodeGroup
@@ -129,11 +145,20 @@ message Node
   string  Host         = 4;
   bool    Monitor      = 5;
 }
+
+message NodeStatus
+{
+   uint32 NodeID      = 1;
+   string Version     = 2;
+   uint64 Height      = 3;
+   float  Ping        = 4;
+}
+
+
 message NodeList
 {
     repeated Node nodes      = 1;
 }
-
 
 
 message DomainCertificate

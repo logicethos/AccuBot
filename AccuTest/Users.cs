@@ -1,5 +1,5 @@
 using AccuTest;
-using AccuBotCommon.Proto;
+using Proto.API;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 
@@ -18,7 +18,7 @@ static public class Users
         
         //Delete the user we added.
         Console.WriteLine("Delete User:");
-        var reply2 = Program.GRPCClient.API.UserDelete(new ID32() { ID = newUser.UserID});
+        var reply2 = Program.GRPCClient.API.UserDelete(new ID32() { ID = newUser.UserID},Program.GRPCClient.Headers);
         
         GetUsers();
         
@@ -28,7 +28,7 @@ static public class Users
     {
         //*** Get users
         Console.WriteLine("Get Users:");
-        var users = Program.GRPCClient.API.UserListGet(new Empty());
+        var users = Program.GRPCClient.API.UserListGet(new Empty(),Program.GRPCClient.Headers);
 
         //Display users
         foreach (var user in users.Users)
@@ -37,11 +37,11 @@ static public class Users
         }
     }
 
-    public static AccuBotCommon.Proto.User AddUser()
+    public static Proto.API.User AddUser()
     {
         //*** Add a user
         Console.WriteLine("Add User:");
-        var newUser = new AccuBotCommon.Proto.User
+        var newUser = new Proto.API.User
         {
             UserID = 0, //Set as zero when adding.  Or the original UserID when updating
             Name = "Fred Smith",
@@ -49,7 +49,7 @@ static public class Users
             Tel = "+44 12345678",
             Discord = "@fred"
         };
-        var reply = Program.GRPCClient.API.UserSet(newUser);
+        var reply = Program.GRPCClient.API.UserSet(newUser,Program.GRPCClient.Headers);
 
         if (reply.Status == MsgReply.Types.Status.Ok)
         {

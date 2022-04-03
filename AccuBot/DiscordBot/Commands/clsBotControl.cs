@@ -27,7 +27,7 @@ namespace AccuBot.DiscordBot.Commands
                 switch (commands[1])
                 {
                     case "reload":
-                        e.Channel.SendMessageAsync(AccuBot.Program.Spreadsheet.LoadSettings());
+                     //   e.Channel.SendMessageAsync(AccuBot.Program.Spreadsheet.LoadSettings());
                         break;
                     case "restart":
                         Program.SetRunState(Program.enumRunState.Restart);

@@ -1,135 +1,97 @@
 ﻿using System;
 using System.Net;
-using MailKit.Net.Smtp;
-using MailKit;
-using MimeKit;
 using DSharpPlus.EventArgs;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
-using MailKit.Security;
+using Proto.API;
 
 namespace AccuBot
 {
     public class clsEmail
     {
-        static String EmailFromAddress;
-        static String SMTPHost;
-        static int SMTPPort;
-        static String SMTPUsername;
-        static String SMTPPassword;
-
+      
         public clsEmail()
         {
         }
         
-        static public void GetSettings()
-        {
-            if (Program.SettingsList.TryGetValue("Email-SMTPHost", out SMTPHost))
-            {
-                Program.SettingsList.TryGetValue("Email-Username", out SMTPUsername);
-                Program.SettingsList.TryGetValue("Email-Password", out SMTPPassword);
-                Program.SettingsList.TryGetValue("Email-FromAddress", out EmailFromAddress);
-                
-                string port;
-                if (Program.SettingsList.TryGetValue("Email-SMTPPort", out port))
-                {
-                    int.TryParse(port, out SMTPPort);
-                }
-            }
-        }
         
-        
-        static public Task SendEmail(String To, String Subject, String Message,DSharpPlus.Entities.DiscordChannel ChBotAlert = null)
+        static public void SendEmail(String To, String Subject, String Message,DSharpPlus.Entities.DiscordChannel ChBotAlert = null)
         {
-           Task task = null; 
            
-           if (String.IsNullOrEmpty(SMTPHost))
+           if (String.IsNullOrEmpty(Program.Settings.EmailSMTPHost))
            {
                 if (ChBotAlert!=null) ChBotAlert.SendMessageAsync($"No SMTP host set up");
-                return task;
+                return;
            }
         
            try
            {
-           
-                task = Task.Run(()=>
-                {
-                    var message = new MimeMessage ();
-                    message.From.Add (new MailboxAddress (EmailFromAddress));
-                    message.To.Add (new MailboxAddress (To));
-                    message.Subject = Subject;
-        
-                    message.Body = new TextPart ("plain") { Text = Message  };
-        
-        
-                    using (var client = new SmtpClient ()) {
+               using (var client = new SmtpClient(Program.Settings.EmailSMTPHost, (int)Program.Settings.EmailSMTPPort))
+               {
 
-                        try
-                        {
-                            // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
-                            client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+                   try
+                   {
+                       MailAddress from = new MailAddress(Program.Settings.EmailFromAddress, Program.Settings.BotName, System.Text.Encoding.UTF8);
+                       MailAddress to = new MailAddress(To);
+                       // Specify the message content.
+                       MailMessage message = new MailMessage(from, to)
+                       {
+                           Body = Message,
+                           BodyEncoding = System.Text.Encoding.UTF8,
+                           Subject = Subject,
+                           SubjectEncoding = System.Text.Encoding.UTF8
+                       };
 
-                            client.Connect(SMTPHost, SMTPPort, SecureSocketOptions.Auto);
+                       client.SendCompleted += (sender, args) => { };
+                       client.SendAsync(message, "Sent");
 
-                            // Note: only needed if the SMTP server requires authentication
-                            client.Authenticate(SMTPUsername, SMTPPassword);
-                            client.Timeout = 10000;
-                            client.Send(message);
-                            client.Disconnect(true);
+                   }
+                   catch (Exception ex)
+                   {
+                       if (ChBotAlert != null)
+                       {
+                           ChBotAlert.SendMessageAsync($"FAILED: e-mail {To}");
+                           ChBotAlert.SendMessageAsync($"```{ex.Message}```");
+                       }
 
-                            if (ChBotAlert != null)
-                                ChBotAlert.SendMessageAsync($"Sent e-mail {To}");
-
-                        }
-                        catch (Exception ex)
-                        {
-
-                            if (ChBotAlert != null)
-                            {
-                                ChBotAlert.SendMessageAsync($"FAILED: e-mail {To}");
-                                ChBotAlert.SendMessageAsync($"```{ex.Message}```");
-                            }
-                            Console.WriteLine(ex.Message);
-                        }
-                        
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                if (ChBotAlert!=null)
-                           ChBotAlert.SendMessageAsync($"Send e-mail error {ex.Message}");
-            }
+                       Console.WriteLine(ex.Message);
+                   }
+               }
+           }
+           catch (Exception ex)
+           {
+                if (ChBotAlert!=null) ChBotAlert.SendMessageAsync($"Send e-mail error {ex.Message}");
+           }
             
-            return task;
         }
 
 
         static public void EmailAlertList(String message = "")
         {
         
-            if (!String.IsNullOrEmpty(SMTPHost))
+            /*if (!String.IsNullOrEmpty(Program.Settings.EmailSMTPHost))
             {
-                string alarmMessage = $"{Program.BotName} Alarm {message}";
+                string alarmMessage = $"{Program.Settings.BotName} Alarm {message}";
                 foreach (var user in Program.UserList.Values.Where(x=>x.OnDuty && !String.IsNullOrEmpty(x.email)))
                 {
                     SendEmail(user.email,alarmMessage,alarmMessage);
                 }
-            }
+            }*/
         }
         
         
         static public void email(String names, DSharpPlus.Entities.DiscordChannel ChBotAlert = null)
         {
         
-        
-            if (String.IsNullOrEmpty(SMTPHost))
+            /*
+            if (String.IsNullOrEmpty(Program.Settings.EmailSMTPHost))
             {
                 if (ChBotAlert!=null) ChBotAlert.SendMessageAsync($"No SMTP host set up");
                 return;
             }
         
-            string alarmMessage = $"{Program.BotName} Alarm (manual Discord request)";
+            string alarmMessage = $"{Program.Settings.BotName} Alarm (manual Discord request)";
         
             foreach (var nameItem in names.Split(new char []{' '}, StringSplitOptions.RemoveEmptyEntries))
             {
@@ -148,6 +110,7 @@ namespace AccuBot
                        ChBotAlert.SendMessageAsync("name not found!");
                 }
             }
+            */
             
         }
         

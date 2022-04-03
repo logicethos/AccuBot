@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Grpc.Core;
-using AccuBotCommon.Proto;
+using Proto.API;
 using Google.Protobuf.WellKnownTypes;
 using System.IO;
 using Google.Protobuf;

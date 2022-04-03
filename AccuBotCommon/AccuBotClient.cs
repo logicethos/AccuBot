@@ -2,7 +2,8 @@ using System;
 using System.Data;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using AccuBotCommon.Proto;
+using Proto.API;
+using Proto.Authentication;
 using Grpc.Core;
 using Grpc.Net.Client;
 
@@ -14,6 +15,7 @@ namespace AccuBotCommon
         private String HostURL;
         private GrpcChannelOptions Options;
         public AccuBotAPI.AccuBotAPIClient API { get; private set; }
+        public Metadata Headers { get; private set; }
         
         public AccuBotClient(string host = "https://localhost:5001", GrpcChannelOptions options = null)
         {
@@ -34,11 +36,23 @@ namespace AccuBotCommon
             Options = options;
         }
 
-        public bool Connect()
+        public Metadata Connect()
         {
             Channel = GrpcChannel.ForAddress(HostURL,Options);
             API =  new AccuBotAPI.AccuBotAPIClient(Channel);
-            return true;
+            var authenticationClient = new Proto.Authentication.AccuBotAuthentication.AccuBotAuthenticationClient(Channel);
+            var authenticationReply = authenticationClient.Authenticate(new AuthenticationRequest()
+            {
+                Username = "admin",
+                Password = "admin"
+            });
+
+            Console.WriteLine($"Token: {authenticationReply.AccessToken}");
+            
+            Headers = new Metadata();
+            Headers.Add("Authorization",$"Bearer {authenticationReply.AccessToken}");
+
+            return Headers;
         }
 
         public void Dispose()

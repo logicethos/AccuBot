@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using AccuBotClient;
-using AccuBotCommon.Proto;
+using Proto.API;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Web; 
 using Microsoft.AspNetCore.Components;

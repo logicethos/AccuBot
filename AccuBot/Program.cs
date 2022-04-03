@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AccuBotCommon.Proto;
+using Proto.API;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
@@ -17,10 +17,28 @@ namespace AccuBot
 {
     public class Program
     {
-        public static AccuBotCommon.Proto.Settings Settings;
+        public static Proto.API.Settings Settings;
         public static string DataPath = "data";
         static public DateTime AppStarted = DateTime.UtcNow;
         static public clsBotClient Bot;
+        
+        static public NodeList nodelist = null;
+        static public NetworkList networkList = null;
+        
+        static public ManualResetEvent ApplicationHold = new ManualResetEvent(false);
+        
+        static enumRunState RunState = enumRunState.Run;
+        public enum enumRunState : int
+        {
+            Stop=0,
+            Run=1,
+            Restart=2,
+            Update=3,
+            PreviousVersion=4,
+            MonoArgs=5,
+            Error = 100
+        }
+
         
         public static void Main(string[] args)
         {
@@ -55,6 +73,65 @@ namespace AccuBot
                 };
             }
 
+            File.Delete(Path.Combine(DataPath, "nodes"));
+            File.Delete(Path.Combine(DataPath, "networklist"));
+            
+            if (File.Exists(Path.Combine(DataPath, "networklist")))
+            {
+                //Read from file
+                Program.networkList = NetworkList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(DataPath, "networklist")));
+            }
+            else
+            {
+                Program.networkList = new NetworkList();
+                Program.networkList.Network.Add(new Network
+                {
+                    NetworkID = 1,
+                    Name = "Mainnet",
+                    StalledAfter = 60,
+                    BlockTime = 600,
+                    NotifictionID = 0,
+                });
+                Program.networkList.Network.Add(new Network
+                {
+                    NetworkID = 2,
+                    Name = "Testnet",
+                    StalledAfter = 300,
+                    BlockTime = 600,
+                    NotifictionID = 0,
+                });
+            }
+
+            if (File.Exists(Path.Combine(DataPath,"nodes")))
+            {  //Read from file
+                Program.nodelist = NodeList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(DataPath, "nodes")));
+            }
+            else
+            {
+                Program.nodelist = new NodeList();
+                Program.nodelist.Nodes.Add( new Node()
+                {
+                    NodeGroupID = 1,
+                    Name = "NY Node",
+                    Host = "100.23.123.12",
+                    Monitor = true,
+                });
+                Program.nodelist.Nodes.Add( new Node()
+                {
+                    NodeGroupID = 1,
+                    Name = "London Node",
+                    Host = "10.3.44.88",
+                    Monitor = true,
+                });
+                Program.nodelist.Nodes.Add( new Node()
+                {
+                    NodeGroupID = 3,
+                    Name = "Frankfurt Node",
+                    Host = "155.22.14.184",
+                    Monitor = false,
+                });
+
+            }
             
             const int apiTimeout = 2000;
             const int loopWait = 3000;
@@ -121,11 +198,12 @@ namespace AccuBot
 
                         clsSSLCertMonitor.HeartbeatCheck();
                           
-                       ApplicationHold.WaitOne(loopWait);*/
-                    
+                       */
+
                     CreateHostBuilder(args).Build().Run();
-                    
-                    }
+                    ApplicationHold.WaitOne(loopWait);
+
+                }
 
        //   var api = new ApiService();
           
@@ -162,5 +240,13 @@ namespace AccuBot
                     
                     }); */
                 });
+        
+        static public void SetRunState(enumRunState runState)
+        {
+            RunState = runState;
+            ApplicationHold.Set();
+        }
+        
     }
+    
 }

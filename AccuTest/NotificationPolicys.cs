@@ -1,5 +1,5 @@
 using AccuTest;
-using AccuBotCommon.Proto;
+using Proto.API;
 using Google.Protobuf.WellKnownTypes;
 
 namespace AccuTest;
@@ -13,7 +13,7 @@ static public class NotificationPolicys
         GetNotificationPolicy();
         var newNotificationPolicy = AddNotificationPolicy();
         GetNotificationPolicy();
-        var reply2 = Program.GRPCClient.API.NotificationPolicyDelete(new ID32() { ID = newNotificationPolicy.NotifictionID });
+        var reply2 = Program.GRPCClient.API.NotificationPolicyDelete(new ID32() { ID = newNotificationPolicy.NotifictionID },Program.GRPCClient.Headers);
         GetNotificationPolicy();
     }
 
@@ -21,7 +21,7 @@ static public class NotificationPolicys
     {
         //*** Get NotificationPolicy
         Console.WriteLine("Get NotificationPolicy:");
-        var notificationPolicy = Program.GRPCClient.API.NotificationPolicyListGet(new Empty());
+        var notificationPolicy = Program.GRPCClient.API.NotificationPolicyListGet(new Empty(),Program.GRPCClient.Headers);
 
         //Display NotificationPolicy List
         foreach (var notify in notificationPolicy.NotificationPolicyList_)
@@ -30,17 +30,17 @@ static public class NotificationPolicys
         }
     }
     
-    public static AccuBotCommon.Proto.NotificationPolicy AddNotificationPolicy()
+    public static Proto.API.NotificationPolicy AddNotificationPolicy()
     {
         //*** Add a NotificationPolicy
         Console.WriteLine("Add NotificationPolicy:");
-        var newPolicy = new AccuBotCommon.Proto.NotificationPolicy
+        var newPolicy = new Proto.API.NotificationPolicy
         {
             Name = "New Notify",
             Discord = 60,
             Call = 120
         };
-        var reply = Program.GRPCClient.API.NotificationPolicySet(newPolicy);
+        var reply = Program.GRPCClient.API.NotificationPolicySet(newPolicy,Program.GRPCClient.Headers);
 
         if (reply.Status == MsgReply.Types.Status.Ok)
         {

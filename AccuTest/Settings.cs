@@ -1,5 +1,5 @@
 using AccuTest;
-using AccuBotCommon.Proto;
+using Proto.API;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 
@@ -20,7 +20,7 @@ static public class Settings
     {
         //*** Get Settings
         Console.WriteLine("Get Settings:");
-        var Settings = Program.GRPCClient.API.SettingsGet(new Empty());
+        var Settings = Program.GRPCClient.API.SettingsGet(new Empty(),Program.GRPCClient.Headers);
 
         Console.WriteLine(Settings.BotName);
         Console.WriteLine(Settings.DiscordClientID);
@@ -48,7 +48,7 @@ static public class Settings
     {
         Console.WriteLine("Write Settings:");
         
-        var set = new AccuBotCommon.Proto.Settings
+        var set = new Proto.API.Settings
         {
             BotName = "TestBot",
             DiscordClientID = "TESTID",
@@ -70,7 +70,7 @@ static public class Settings
             EmailFromAddress = "fromEmail",
         };
 
-        var reply = Program.GRPCClient.API.SettingsSet(set);
+        var reply = Program.GRPCClient.API.SettingsSet(set,Program.GRPCClient.Headers);
 
         if (reply.Status == MsgReply.Types.Status.Ok)
         {

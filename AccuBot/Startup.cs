@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AccuBot.GRPC;
+using Proto.API;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AccuBot
 {
@@ -17,6 +21,24 @@ namespace AccuBot
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtAuthenticationManager.JWT_TOKEN_KEY)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                };
+            });
+            services.AddAuthorization();
             services.AddGrpc();
             services.AddRazorPages()
                 .AddRazorPagesOptions(options =>
@@ -59,7 +81,9 @@ namespace AccuBot
             {
                 endpoints.MapRazorPages();
                 //endpoints.MapControllers();
+                endpoints.MapGrpcService<AuthenticationService>().EnableGrpcWeb().RequireCors("AllowAll");
                 endpoints.MapGrpcService<ApiService>().EnableGrpcWeb().RequireCors("AllowAll");
+                
                // endpoints.MapFallbackToPage("/Index.razor");
                 
 

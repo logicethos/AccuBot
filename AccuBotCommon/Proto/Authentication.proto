@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "Proto.Authentication";
+package AccuBot;
+
+service AccuBotAuthentication
+{
+  rpc Authenticate (AuthenticationRequest) returns (AuthenticationReply);
+}
+
+message AuthenticationRequest
+{
+  string Username = 1;
+  string Password = 2;
+}
+
+message AuthenticationReply
+{
+  string AccessToken = 1;  //JWT access token.
+  int32  ExpiresIn = 2;
+}

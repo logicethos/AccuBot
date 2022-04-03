@@ -22,31 +22,28 @@ namespace AccuBot.DiscordBot.Commands
         {
             var sb = new StringBuilder();
             
-            String alertChannelString = null;
-            if (Program.SettingsList.TryGetValue("Discord-AlertsChannel",out alertChannelString))
-            alertChannelString = alertChannelString.ToLower().Replace("#","");
+            String alertChannelString = Program.Settings.DiscordAlertsChannel.ToLower().Replace("#","");
             
-            sb.AppendLine($"Discord Gateway: {Program.Bot._client.GatewayUrl} Version: {Program.Bot._client.GatewayVersion}");
-            sb.AppendLine($"                 {Program.Bot._client.CurrentUser}   ");
+            sb.AppendLine($"Discord Gateway: {Program.Bot._client.GatewayUri} Version: {Program.Bot._client.GatewayVersion}");
+            sb.AppendLine($"Discord Info: {Program.Bot._client.GatewayInfo}");
+            sb.AppendLine($"                 {Program.Bot._client.CurrentUser}");
             sb.AppendLine($"                 Ping {Program.Bot._client.Ping}");
             
             
             sb.AppendLine();
             foreach (var discord in Program.Bot._client.Guilds.Values)
             {
-                sb.AppendLine($"{discord.Name} {discord.Id} {discord.RegionId}");
+                sb.AppendLine($"{discord.Name} {discord.Id}");
                 sb.AppendLine($"   Channels:{discord.Channels.Count} Members:{discord.MemberCount} Owner:{discord.Owner.DisplayName}#{discord.Owner.Discriminator}");
                 sb.AppendLine($"   Joined:{discord.JoinedAt:yyyy-MM-dd}");
                 
                 if (discord.Id != 419201548372017163)
                 {
                     sb.Append($"   Alert Channel: '{alertChannelString}' ");
-                    sb.AppendLine(discord.Channels.Any(x => x.Name == alertChannelString) ? "" : "NOT FOUND");
+                    sb.AppendLine(discord.Channels.Any(x => x.Value.Name == alertChannelString) ? "" : "NOT FOUND");
                 }
                 sb.AppendLine();
             }
-
-
             e.Channel.SendMessageAsync($"```{sb.ToString()}```");
         }
 

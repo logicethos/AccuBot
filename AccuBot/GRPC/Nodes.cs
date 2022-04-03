@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Grpc.Core;
-using AccuBotCommon.Proto;
+using Proto.API;
 using Google.Protobuf.WellKnownTypes;
 using System.IO;
 using Google.Protobuf;
@@ -15,7 +15,7 @@ public partial class ApiService
     public override Task<MsgReply> NodeSet(Node node, ServerCallContext context)
     {
         MsgReply msgReply = null;
-        var exitingNodes = NodeListGet(null, null).Result;  //get existing nodes.
+        var exitingNodes = Program.nodelist ?? new NodeList();  //get existing nodes.
 
         if (node.NodeID == 0) //id not set, so new node
         {
@@ -45,40 +45,22 @@ public partial class ApiService
     
     public override Task<NodeList> NodeListGet(Empty request, ServerCallContext context)
     {
-        NodeList nodelist = null;
-        if (File.Exists(Path.Combine(path,"nodes")))
-        {  //Read from file
-            nodelist = NodeList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(path, "nodes")));
-        }
-        else
-        {
-            nodelist = new NodeList();
-            nodelist.Nodes.Add( new Node()
-            {
-                NodeGroupID = 1,
-                Name = "my node",
-                Host = "123.123.123.123",
-                Monitor = true,
-            });
-        }
-
-        return Task.FromResult(nodelist);
+        return Task.FromResult(Program.nodelist);
     }
 
     public override Task<MsgReply> NodeDelete(ID32 nodeID, ServerCallContext context)
     {
         MsgReply msgReply = null;
-        var existingNodes = NodeListGet(null, null).Result;  //get existing nodes.
-
-        var node = existingNodes.Nodes.FirstOrDefault(x => x.NodeID == nodeID.ID);
+        
+        var node = Program.nodelist.Nodes.FirstOrDefault(x => x.NodeID == nodeID.ID);
         if (node==null)
         {
             msgReply = new MsgReply() { Status = MsgReply.Types.Status.Fail, Message = "Node not found"};
         }
         else
         {
-            existingNodes.Nodes.Remove(node);
-            File.WriteAllBytes(Path.Combine(path, "nodes"),existingNodes.ToByteArray());
+            Program.nodelist.Nodes.Remove(node);
+            File.WriteAllBytes(Path.Combine(path, "nodes"),Program.nodelist.ToByteArray());
             msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok};
         }
         return Task.FromResult(msgReply);

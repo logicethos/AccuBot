@@ -16,41 +16,35 @@
       <PackageReference Include="DSharpPlus" Version="4.1.0" />
       <PackageReference Include="Grpc.AspNetCore" Version="2.42.0" />
       <PackageReference Include="Grpc.AspNetCore.Web" Version="2.43.0" />
+      <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
+      <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.314" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.16.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Compile Remove="DiscordBot\Commands\clsAlarm.cs" />
       <None Include="DiscordBot\Commands\clsAlarm.cs" />
-      <Compile Remove="DiscordBot\Commands\clsBotControl.cs" />
-      <None Include="DiscordBot\Commands\clsBotControl.cs" />
       <Compile Remove="DiscordBot\Commands\clsCall.cs" />
       <None Include="DiscordBot\Commands\clsCall.cs" />
-      <Compile Remove="DiscordBot\Commands\clsDiscord.cs" />
-      <None Include="DiscordBot\Commands\clsDiscord.cs" />
       <Compile Remove="DiscordBot\Commands\clsEmail.cs" />
       <None Include="DiscordBot\Commands\clsEmail.cs" />
       <Compile Remove="DiscordBot\Commands\clsListNodes.cs" />
       <None Include="DiscordBot\Commands\clsListNodes.cs" />
-      <Compile Remove="DiscordBot\Commands\clsMTR.cs" />
-      <None Include="DiscordBot\Commands\clsMTR.cs" />
       <Compile Remove="DiscordBot\Commands\clsNetworks.cs" />
       <None Include="DiscordBot\Commands\clsNetworks.cs" />
-      <Compile Remove="DiscordBot\Commands\clsSkyNet.cs" />
-      <None Include="DiscordBot\Commands\clsSkyNet.cs" />
       <Compile Remove="DiscordBot\Commands\clsSSL.cs" />
       <None Include="DiscordBot\Commands\clsSSL.cs" />
       <Compile Remove="DiscordBot\Commands\clsUsers.cs" />
       <None Include="DiscordBot\Commands\clsUsers.cs" />
-      <Compile Remove="DiscordBot\Commands\clsVersion.cs" />
-      <None Include="DiscordBot\Commands\clsVersion.cs" />
       <Compile Remove="DiscordBot\clsAlarmManager.cs" />
       <None Include="DiscordBot\clsAlarmManager.cs" />
-      <Compile Remove="DiscordBot\clsEmail.cs" />
-      <None Include="DiscordBot\clsEmail.cs" />
       <Compile Remove="DiscordBot\clsSSLCertMonitor.cs" />
       <None Include="DiscordBot\clsSSLCertMonitor.cs" />
       <Compile Remove="DiscordBot\clsAlarm.cs" />
       <None Include="DiscordBot\clsAlarm.cs" />
+      <Compile Remove="DiscordBot\Commands\clsMTR.cs" />
+      <None Include="DiscordBot\Commands\clsMTR.cs" />
     </ItemGroup>
 
 </Project>

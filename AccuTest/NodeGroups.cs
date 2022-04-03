@@ -1,5 +1,5 @@
 using AccuTest;
-using AccuBotCommon.Proto;
+using Proto.API;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 
@@ -16,7 +16,7 @@ namespace AccuTest;
 
             //Delete the NodeGroup we added.
             Console.WriteLine("Delete NodeGroup:");
-            var reply2 = Program.GRPCClient.API.NodeGroupDelete(new ID32() { ID = newNodeGroup.NodeGroupID });
+            var reply2 = Program.GRPCClient.API.NodeGroupDelete(new ID32() { ID = newNodeGroup.NodeGroupID },Program.GRPCClient.Headers);
 
             GetNodeGroups();
         }
@@ -25,7 +25,7 @@ namespace AccuTest;
         {
             //*** Get NodeGroups
             Console.WriteLine("Get NodeGroups:");
-            var NodeGroups = Program.GRPCClient.API.NodeGroupListGet(new Empty());
+            var NodeGroups = Program.GRPCClient.API.NodeGroupListGet(new Empty(),Program.GRPCClient.Headers);
 
             //Display NodeGroups
             foreach (var NodeGroup in NodeGroups.NodeGroup)
@@ -34,11 +34,11 @@ namespace AccuTest;
             }
         }
 
-        public static AccuBotCommon.Proto.NodeGroup AddNodeGroup()
+        public static Proto.API.NodeGroup AddNodeGroup()
         {
             //*** Add a NodeGroup
             Console.WriteLine("Add NodeGroup:");
-            var newNodeGroup = new AccuBotCommon.Proto.NodeGroup
+            var newNodeGroup = new Proto.API.NodeGroup
             {
                 Name = "Devnet",
                 NetworkID = 1,
@@ -46,7 +46,7 @@ namespace AccuTest;
                 HeightNotifictionID = 0,
                 LatencyNotifictionID = 0
             };
-            var reply = Program.GRPCClient.API.NodeGroupSet(newNodeGroup);
+            var reply = Program.GRPCClient.API.NodeGroupSet(newNodeGroup,Program.GRPCClient.Headers);
 
             if (reply.Status == MsgReply.Types.Status.Ok)
             {
