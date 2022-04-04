@@ -8,48 +8,54 @@ package AccuBot;
 
 service AccuBotAPI {
 
+  // Tab for NotificationPolicy
   rpc NotificationPolicyListGet(google.protobuf.Empty) returns (NotificationPolicyList);
   rpc NotificationPolicySet(NotificationPolicy) returns (MsgReply);
   rpc NotificationPolicyDelete(ID32) returns (MsgReply);
 
+  // Tab for Networks
   rpc NetworkListGet(google.protobuf.Empty) returns (NetworkList);
   rpc NetworkSet(Network) returns (MsgReply);
   rpc NetworkDelete(ID32) returns (MsgReply);
 
-  rpc NodeGroupListGet(google.protobuf.Empty) returns (NodeGroupList);
+  //Tab for NodeGroups
+  rpc NodeGroupListGet(google.protobuf.Empty) returns (NodeGroupList); //You will also need to get NetworkListGet & NotificationPolicy for the combo dropdown.
   rpc NodeGroupSet(NodeGroup) returns (MsgReply);
   rpc NodeGroupDelete(ID32) returns (MsgReply);
 
-  rpc NodeListGet(google.protobuf.Empty) returns (NodeList);
+  //Tab for Nodes
+  rpc NodeListGet(google.protobuf.Empty) returns (NodeList);  //You will also need to get the NodeGroupListGet for the combo dropdown.
   rpc NodeSet(Node) returns (MsgReply);
   rpc NodeDelete(ID32) returns (MsgReply);
-
-  rpc UserListGet(google.protobuf.Empty) returns (UserList);
-  rpc UserSet(User) returns (MsgReply);
-  rpc UserDelete(ID32) returns (MsgReply);
-
+  
+  //Tab for SSL Certs
   rpc DomainCertificateListGet(google.protobuf.Empty) returns (DomainCertificateList);
   rpc DomainCertificateSet(DomainCertificate) returns (MsgReply);
   rpc DomainCertificateDelete(ID32) returns (MsgReply);
 
+  //Tab for Settings.
   rpc SettingsGet(google.protobuf.Empty) returns (Settings);
   rpc SettingsSet(Settings) returns (MsgReply);
 
-  //Dashboard
+  //Tab for Users.  Note, this is not on a the speadsheet.  Its a simple list of users.
+  rpc UserListGet(google.protobuf.Empty) returns (UserList);
+  rpc UserSet(User) returns (MsgReply);
+  rpc UserDelete(ID32) returns (MsgReply);
+
+  //Dashboard.  This is not on the spreadsheet.  Dont use this for now.
   rpc NetworkStatusStream(StreamRequest) returns (stream NetworkStatus);
   rpc NodeStatusStream(StreamRequest) returns (stream NodeStatus);
-  
 }
 
 message MsgReply {
   enum Status
   {
-    fail = 0;
+    fail = 0;  //If an error is returned, then it would be a good idea to notify the user, with a popup, and display the message.
     ok = 1;
   }
   Status status = 1;
-  string message = 2;
-  uint32 newID32 = 3;
+  string message = 2;  //If an error occurs, this may have a message.
+  uint32 newID32 = 3;  //If a new record ID is created, this will be set. 
 }
 
 message ID32 {
@@ -127,10 +133,10 @@ message NodeGroup
 {
   uint32    NodeGroupID            = 1;
   string    Name                   = 2;
-  uint32    NetworkID              = 3;  //See Network
-  uint32    PingNotifictionID      = 4;
-  uint32    HeightNotifictionID    = 5;
-  uint32    LatencyNotifictionID   = 6;
+  uint32    NetworkID              = 3;  //See Network.NetworkID
+  uint32    PingNotifictionID      = 4;  //See NotificationPolicy.NotifictionID
+  uint32    HeightNotifictionID    = 5;  //See NotificationPolicy.NotifictionID
+  uint32    LatencyNotifictionID   = 6;  //See NotificationPolicy.NotifictionID
 }
 message NodeGroupList
 {

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Linq;
 using System.Diagnostics;
 using AccuBot.DiscordBot;
+using AccuBot.Git;
 using Microsoft.Extensions.Logging;
 
 namespace AccuBot
@@ -175,14 +176,14 @@ namespace AccuBot
                     }
                     
 #else
-                    Our_BotAlert = e.Guild.Channels.FirstOrDefault(x=>x.Name == alertChannelString);
+                    Our_BotAlert = e.Guild.Channels.Values.FirstOrDefault(x=>x.Name == alertChannelString);
                     if (Our_BotAlert!=null)
                     {
                        Console.WriteLine($"Our Alert channel: {Our_BotAlert.Name}");
                        if (clsVersion.VersionChangeFlag)
-                         Bot.Our_BotAlert.SendMessageAsync($":drum: Welcome to version {clsGitHead.GetHeadToString()} :trumpet:");
+                         Our_BotAlert.SendMessageAsync($":drum: Welcome to version {clsGitHead.GetHeadToString()} :trumpet:");
                        else
-                         Bot.Our_BotAlert.SendMessageAsync("Hello :innocent:");
+                         Our_BotAlert.SendMessageAsync("Hello :innocent:");
                          
                        if (TextBuffer.Length>0) Our_BotAlert.SendMessageAsync(TextBuffer.ToString()).ContinueWith((x)=>{TextBuffer.Clear();});
                     }

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 
 using Proto.API;
 using Microsoft.AspNetCore.Hosting;
@@ -42,7 +44,19 @@ namespace AccuBot
         
         public static void Main(string[] args)
         {
+            
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+              //  .WriteTo.File("logfile.log", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+            
+            
             Directory.CreateDirectory(DataPath);
+            Directory.CreateDirectory(Path.Combine(DataPath, "certs"));
+            Directory.CreateDirectory(Path.Combine(DataPath, "www"));
+            
             if (File.Exists(Path.Combine(DataPath,"settings")))
             {  //Read from file
                 Settings = Settings.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(DataPath, "settings.dat")));
@@ -200,7 +214,50 @@ namespace AccuBot
                           
                        */
 
-                    CreateHostBuilder(args).Build().Run();
+             var host = new WebHostBuilder()
+                 
+            .UseSerilog()
+#if DEBUG            
+         //   .UseUrls("https://localhost:5001")
+            .UseKestrel(k =>
+                {
+                    var appServices = k.ApplicationServices;
+                    
+                    k.ConfigureHttpsDefaults(h =>
+                    {
+                        h.ClientCertificateMode = ClientCertificateMode.AllowCertificate;
+                        h.ClientCertificateValidation = (certificate, chain, errors) =>
+                        {
+                            return true; //certificate.Issuer == serverCert.Issuer;
+                        };
+                        
+                    });
+                    k.Listen(IPAddress.Any, 5001,options => {
+                        options.UseHttps(SelfSignedCertificate.GetSelfSignedCertificate());
+                    });
+                })
+#else
+            .UseUrls("https://0.0.0.0:443")
+            .UseKestrel(k =>
+                {
+                    var appServices = k.ApplicationServices;
+                    k.ConfigureHttpsDefaults(h =>
+                    {
+                        h.ClientCertificateMode = ClientCertificateMode.RequireCertificate;
+                        h.UseLettuceEncrypt(appServices);
+                    });
+                })
+#endif
+            
+            .UseStartup<Startup>()
+            
+            .Build();
+          
+             
+        host.Run();
+                    
+                    
+                  //  CreateHostBuilder(args).Build().Run();
                     ApplicationHold.WaitOne(loopWait);
 
                 }
@@ -209,37 +266,6 @@ namespace AccuBot
           
        
         }
-
-        // Additional configuration is required to successfully run gRPC on macOS.
-        // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => 
-                    
-                {
-                    webBuilder.ConfigureKestrel(options =>
-                    {
-                        // Setup a HTTP/2 endpoint without TLS.
-              //          options.ListenLocalhost(5000, o => o.Protocols = HttpProtocols.Http2);
-                        
-                    });
-                    webBuilder.UseStartup<Startup>();
-                        
-                        /*
-                        .ConfigureKestrel(kestrelServerOptions => {
-                        kestrelServerOptions.ConfigureHttpsDefaults(opt =>
-                        {
-                            opt.ClientCertificateMode = ClientCertificateMode.AllowCertificate;
-
-                            // Verify that client certificate was issued by same CA as server certificate
-                            opt.ClientCertificateValidation = (certificate, chain, errors) =>
-                            {
-                                return true; //certificate.Issuer == serverCert.Issuer;
-                            };
-                        });
-                    
-                    }); */
-                });
         
         static public void SetRunState(enumRunState runState)
         {

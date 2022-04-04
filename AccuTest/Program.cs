@@ -12,15 +12,15 @@ namespace AccuTest
         
         public static void Main(string[] args)
         {
-            GRPCClient = new AccuBotCommon.AccuBotClient("https://localhost:5001");
+            GRPCClient = new AccuBotCommon.AccuBotClient("https://red2.logicethos.com");
             var headers = GRPCClient.Connect();
             
            //Users.Test();
-           //Dashboard.Test();
+           Dashboard.Test();
            
-            Networks.Test();
+           // Networks.Test();
           //  NotificationPolicys.Test();
-            Nodes.Test();
+          //  Nodes.Test();
           //  NodeGroups.Test();
           //  Settings.Test();
         }

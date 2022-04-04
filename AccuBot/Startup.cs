@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AccuBot.GRPC;
+using LettuceEncrypt;
 using Proto.API;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -40,18 +41,21 @@ namespace AccuBot
             });
             services.AddAuthorization();
             services.AddGrpc();
-            services.AddRazorPages()
+            /*services.AddRazorPages()
                 .AddRazorPagesOptions(options =>
                 {
                     //Use the below line to change the default directory
                     //for your Razor Pages.
-               //     options.RootDirectory = "/wwwroot";
+                    options.RootDirectory = Path.Combine("/",Program.DataPath, "www");
                 
                     //Use the below line to change the default
                     //"landing page" of the application.
-              //      options.Conventions.AddPageRoute("/wwwroot/Index.razor", "");
-                });
-            
+                    //options.Conventions.AddPageRoute(Path.Combine(Program.DataPath, "www","index.razor") , "");
+              
+                  
+                });*/
+
+
             services.AddCors(o => o.AddPolicy("AllowAll", builder =>
             {
                 builder.AllowAnyOrigin()
@@ -59,40 +63,53 @@ namespace AccuBot
                     .AllowAnyHeader()
                     .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
             }));
-            
+
+            services.AddLettuceEncrypt(c =>
+                {
+                    c.DomainNames = new[] { "red2.logicethos.com" };
+                    c.EmailAddress = "stuart@logicethos.com";
+                    c.AcceptTermsOfService = true;
+                    c.RenewDaysInAdvance = TimeSpan.FromDays(3);
+//                    c.RenewalCheckPeriod = TimeSpan.FromSeconds(30);
+#if DEBUG
+                    c.UseStagingServer = true;
+#endif
+                })
+                .PersistDataToDirectory(new DirectoryInfo(Path.Combine(Program.DataPath,"certs")),null);
+
+        //    services.AddControllers();
+         //   services.AddRouting();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
+            
             app.UseRouting();
             app.UseGrpcWeb(); 
             app.UseCors();
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
+            
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
-                //endpoints.MapControllers();
+             //   endpoints.MapRazorPages();
+             //   endpoints.MapControllers();
                 endpoints.MapGrpcService<AuthenticationService>().EnableGrpcWeb().RequireCors("AllowAll");
                 endpoints.MapGrpcService<ApiService>().EnableGrpcWeb().RequireCors("AllowAll");
                 
-               // endpoints.MapFallbackToPage("/Index.razor");
-                
+                // endpoints.MapFallbackToPage("/Index.razor");
 
-                /*endpoints.MapGet("/",
+                endpoints.MapGet("/",
                     async context =>
                     {
                         await context.Response.WriteAsync(
                             "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-                    });*/
+                    });
             });
             
         }

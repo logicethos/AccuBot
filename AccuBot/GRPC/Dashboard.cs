@@ -18,6 +18,7 @@ public partial class ApiService
         {
             var random = new Random();
             UInt32 height = 1000000000;
+            await Task.Delay(10);
             while (!context.CancellationToken.IsCancellationRequested)
             {
                 height++;
@@ -51,6 +52,7 @@ public partial class ApiService
         {
             var random = new Random();
             UInt32 height = 1000000000;
+            await Task.Delay(10);
             while (!context.CancellationToken.IsCancellationRequested)
             {
                 height++;
@@ -63,6 +65,7 @@ public partial class ApiService
                         AverageTime = 1+(float)random.NextDouble()
                     });
                 }
+                await Task.Delay((int)request.Seconds * 1000, context.CancellationToken);
             }
         }
         catch (TaskCanceledException)
