@@ -85,7 +85,7 @@ message Authentication  //A project for later
 
 message User
 {
-    uint32    UserID    = 1;
+    uint32    UserID    = 1;  //do not display. Set to 0 for new entries only.  
     string    Name      = 2;
     string    Email     = 6;
     string    Tel       = 7;
@@ -99,7 +99,7 @@ message UserList
 
 message NotificationPolicy
 {
-    uint32    NotifictionID   = 1;    //do not display or set
+    uint32    NotifictionID   = 1;    //do not display. Set to 0 for new entries only.
     string    Name            = 2;
     int32     Discord         = 3;    // -1 = off, Delay 0 - 999 Seconds
     int32     Call            = 4;    // -1 = off, Delay 0 - 999 Seconds
@@ -111,7 +111,7 @@ message NotificationPolicyList
 
 message Network
 {
-    uint32    NetworkID       = 1;   //do not display or set
+    uint32    NetworkID       = 1;   //do not display. Set to 0 for new entries only.
     string    Name            = 2;
     uint32    BlockTime       = 3;   //Seconds
     uint32    StalledAfter    = 4;
@@ -124,14 +124,14 @@ message NetworkList
 
 message NetworkStatus
 {
-    uint32    NetworkID       = 1;   //do not display or set
+    uint32    NetworkID       = 1;   //do not display. Set to 0 for new entries only.
     uint64    Height          = 2;
     float     AverageTime     = 3;
 }
 
 message NodeGroup
 {
-  uint32    NodeGroupID            = 1;
+  uint32    NodeGroupID            = 1;  //do not display. Set to 0 for new entries only.
   string    Name                   = 2;
   uint32    NetworkID              = 3;  //See Network.NetworkID
   uint32    PingNotifictionID      = 4;  //See NotificationPolicy.NotifictionID
@@ -145,7 +145,7 @@ message NodeGroupList
 
 message Node
 {
-  uint32  NodeID       = 1;
+  uint32  NodeID       = 1;  //do not display. Set to 0 for new entries only.
   uint32  NodeGroupID  = 2;
   string  Name         = 3;
   string  Host         = 4;
@@ -154,7 +154,7 @@ message Node
 
 message NodeStatus
 {
-   uint32 NodeID      = 1;
+   uint32 NodeID      = 1;  //do not display.
    string Version     = 2;
    uint64 Height      = 3;
    float  Ping        = 4;
