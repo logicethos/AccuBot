@@ -53,9 +53,9 @@ message MsgReply {
     fail = 0;  //If an error is returned, then it would be a good idea to notify the user, with a popup, and display the message.
     ok = 1;
   }
-  Status status = 1;
-  string message = 2;  //If an error occurs, this may have a message.
-  uint32 newID32 = 3;  //If a new record ID is created, this will be set. 
+  Status status     = 1;
+  string message    = 2;  //If an error occurs, this may have a message.
+  uint32 newID32    = 3;  //If a new record ID is created, this will be set. 
 }
 
 message ID32 {
@@ -73,7 +73,6 @@ message Authentication  //A project for later
     enum twoFAtype  
   {
     Yubikey = 0;
-    GoogleAuth = 1;
   }
 
   uint32    UserID    = 1;
@@ -85,11 +84,21 @@ message Authentication  //A project for later
 
 message User
 {
-    uint32    UserID    = 1;  //do not display. Set to 0 for new entries only.  
-    string    Name      = 2;
-    string    Email     = 6;
-    string    Tel       = 7;
-    string    Discord   = 8;
+    enum AccessRights
+    {
+       Read     = 0;
+       Write    = 1;
+       Users    = 2;
+       Settings = 4;
+    }
+  
+  
+    uint32    UserID              = 1;  //do not display. Set to 0 for new entries only.  
+    string    Name                = 2;
+    string    Email               = 3;
+    string    Tel                 = 4;
+    string    Discord             = 5;
+    uint32    AccessRightsBits    = 6;
 }
 
 message UserList
@@ -146,7 +155,7 @@ message NodeGroupList
 message Node
 {
   uint32  NodeID       = 1;  //do not display. Set to 0 for new entries only.
-  uint32  NodeGroupID  = 2;
+  uint32  NodeGroupID  = 2;  //See NodeGroup.NodeGroupID
   string  Name         = 3;
   string  Host         = 4;
   bool    Monitor      = 5;
@@ -169,9 +178,9 @@ message NodeList
 
 message DomainCertificate
 {
-    uint32 DomainCertificateID = 1;
-    string Domain     = 2;
-    bool   Monitor      = 3;
+    uint32 DomainCertificateID  = 1;
+    string Domain               = 2;
+    bool   Monitor              = 3;
 }
 message DomainCertificateList
 {
