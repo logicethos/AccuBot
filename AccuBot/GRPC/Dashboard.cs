@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Grpc.Core;
 using Proto.API;
@@ -19,14 +20,16 @@ public partial class ApiService
             var random = new Random();
             UInt32 height = 1000000000;
             await Task.Delay(10);
+            Console.WriteLine("NodeStatusStream started");
             while (!context.CancellationToken.IsCancellationRequested)
             {
+                Console.WriteLine("NodeStatusStream next");
                 height++;
-                foreach (var node in Program.nodelist.Nodes)
+                foreach (var node in Program.NodeManager.NodeList)
                 {
                     await responseStream.WriteAsync(new NodeStatus
                     {
-                        NodeID = node.NodeID,
+                        NodeID = node.Key,
                         Version = "v1.1.2",
                         Height = height,
                         Ping = 5 * random.NextSingle()
@@ -34,6 +37,7 @@ public partial class ApiService
                 }
                 await Task.Delay((int)request.Seconds * 1000, context.CancellationToken);
             }
+            Console.WriteLine("NodeStatusStream End");
         }
         catch (TaskCanceledException)
         {
@@ -53,20 +57,30 @@ public partial class ApiService
             var random = new Random();
             UInt32 height = 1000000000;
             await Task.Delay(10);
+            Console.WriteLine("NetworkStatusStream started");
+            //context.CancellationToken.
+            var sw = new Stopwatch();
+            sw.Start();
             while (!context.CancellationToken.IsCancellationRequested)
             {
+                Console.WriteLine($"sw1: {sw.ElapsedMilliseconds}");
+                Console.WriteLine("NetworkStatusStream next");
                 height++;
-                foreach (var network in Program.networkList.Network)
+                foreach (var network in Program.NetworkManager.NetworkList)
                 {
                     await responseStream.WriteAsync(new NetworkStatus
                     {
-                        NetworkID = network.NetworkID,
+                        NetworkID = network.Key,
                         Height = height,
                         AverageTime = 1+(float)random.NextDouble()
                     });
                 }
                 await Task.Delay((int)request.Seconds * 1000, context.CancellationToken);
+                Console.WriteLine($"sw2: {sw.ElapsedMilliseconds}");
             }
+            Console.WriteLine($"NetworkStatusStream End CanRequest: {context.CancellationToken.IsCancellationRequested}");
+            Console.WriteLine($"sw3: {sw.ElapsedMilliseconds}");
+            ;
         }
         catch (TaskCanceledException)
         {

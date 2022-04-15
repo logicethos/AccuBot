@@ -5,6 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using AccuBot.Monitoring;
+using Google.Protobuf.Collections;
+using Google.Protobuf.WellKnownTypes;
 using Serilog;
 
 using Proto.API;
@@ -23,9 +26,16 @@ namespace AccuBot
         public static string DataPath = "data";
         static public DateTime AppStarted = DateTime.UtcNow;
         static public clsBotClient Bot;
+
+        static public clsNetworkManagar NetworkManager;
+        static public clsNodeManagar NodeManager;
+        static public clsNotificationPolicyManagar NotificationPolicyManager;
+        static public clsNodeGroupManagar NodeGroupManager;
         
-        static public NodeList nodelist = null;
-        static public NetworkList networkList = null;
+        static public Proto.API.NetworkStatus networkStatus;
+        
+
+        static public clsAlarmManager AlarmManager = new clsAlarmManager();
         
         static public ManualResetEvent ApplicationHold = new ManualResetEvent(false);
         
@@ -40,7 +50,36 @@ namespace AccuBot
             MonoArgs=5,
             Error = 100
         }
-
+        
+        static public DateTime AlarmOffTime;
+        static public uint AlarmOffWarningMultiplier;
+        public enum EnumAlarmState { Off, On, Silent }
+        static public  DateTime? AlarmStateTimeout;
+        static public  EnumAlarmState _alarmState = EnumAlarmState.On;
+        static public  EnumAlarmState AlarmState 
+        {    get
+            {
+                return _alarmState;
+            }
+        
+            private set
+            {
+                if (_alarmState != value)
+                {
+                    _alarmState = value;
+                    if (value == EnumAlarmState.Off) //New state off
+                    {
+                        AlarmOffTime = DateTime.UtcNow;
+                        AlarmOffWarningMultiplier=0;
+                    }
+                    else if (value == EnumAlarmState.On) //New state on
+                    {
+                        AlarmStateTimeout = null;
+                    }
+                }
+            }
+        }
+        
         
         public static void Main(string[] args)
         {
@@ -52,101 +91,24 @@ namespace AccuBot
               //  .WriteTo.File("logfile.log", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
             
-            
-            Directory.CreateDirectory(DataPath);
-            Directory.CreateDirectory(Path.Combine(DataPath, "certs"));
-            Directory.CreateDirectory(Path.Combine(DataPath, "www"));
-            
-            if (File.Exists(Path.Combine(DataPath,"settings")))
-            {  //Read from file
-                Settings = Settings.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(DataPath, "settings.dat")));
-            }
-            else
+            clsSettings.Load();
+
+            try
             {
-                //Fill with defaults
-                Settings = new Settings()
-                {
-                    BotName = "My Bot",
-                    DiscordClientID = "955503128705392660",
-                    DiscordToken = "OTU1NTAzMTI4NzA1MzkyNjYw.Yjinog.ltCgJ9c_-SXlLEDPR7khzTSJBa0",
-                    AccumulateOperatorAlertsCh = 443025488655417364,
-                    DiscordAlertsChannel = "#Bot-Alerts",
-                    SIPUsername = "",
-                    SIPPassword = "",
-                    SIPHost = "",
-                    SIPCallingNumber = "",
-                    TwimletURL = "",
-                    AlarmOffWarningMinutes = 30,
-                    LatencyTriggerMultiplier = 2,
-                    BotCommandPrefix = "!",
-                    EmailSMTPHost = "",
-                    EmailSMTPPort = 587,
-                    EmailUsername = "",
-                    EmailPassword = "",
-                    EmailFromAddress = "",
-                };
+                
+                NetworkManager = new clsNetworkManagar();
+                NodeGroupManager = new clsNodeGroupManagar();
+                NotificationPolicyManager = new clsNotificationPolicyManagar();
+                NodeManager = new clsNodeManagar();
+            }
+            catch ( Exception ex)
+            {
+                Log.Fatal(ex,"Startup");                
             }
 
-            File.Delete(Path.Combine(DataPath, "nodes"));
-            File.Delete(Path.Combine(DataPath, "networklist"));
-            
-            if (File.Exists(Path.Combine(DataPath, "networklist")))
-            {
-                //Read from file
-                Program.networkList = NetworkList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(DataPath, "networklist")));
-            }
-            else
-            {
-                Program.networkList = new NetworkList();
-                Program.networkList.Network.Add(new Network
-                {
-                    NetworkID = 1,
-                    Name = "Mainnet",
-                    StalledAfter = 60,
-                    BlockTime = 600,
-                    NotifictionID = 0,
-                });
-                Program.networkList.Network.Add(new Network
-                {
-                    NetworkID = 2,
-                    Name = "Testnet",
-                    StalledAfter = 300,
-                    BlockTime = 600,
-                    NotifictionID = 0,
-                });
-            }
 
-            if (File.Exists(Path.Combine(DataPath,"nodes")))
-            {  //Read from file
-                Program.nodelist = NodeList.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(DataPath, "nodes")));
-            }
-            else
-            {
-                Program.nodelist = new NodeList();
-                Program.nodelist.Nodes.Add( new Node()
-                {
-                    NodeGroupID = 1,
-                    Name = "NY Node",
-                    Host = "100.23.123.12",
-                    Monitor = true,
-                });
-                Program.nodelist.Nodes.Add( new Node()
-                {
-                    NodeGroupID = 1,
-                    Name = "London Node",
-                    Host = "10.3.44.88",
-                    Monitor = true,
-                });
-                Program.nodelist.Nodes.Add( new Node()
-                {
-                    NodeGroupID = 3,
-                    Name = "Frankfurt Node",
-                    Host = "155.22.14.184",
-                    Monitor = false,
-                });
 
-            }
-            
+
             const int apiTimeout = 2000;
             const int loopWait = 3000;
             Settings.BotName ="TFA-AccBot";
@@ -265,6 +227,12 @@ namespace AccuBot
        //   var api = new ApiService();
           
        
+        }
+        
+        static public void SendAlert(String message)
+        {
+            if (AlarmState == EnumAlarmState.On || AlarmState == EnumAlarmState.Silent)
+                Bot.Our_BotAlert.SendMessageAsync(message);
         }
         
         static public void SetRunState(enumRunState runState)

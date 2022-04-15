@@ -14,56 +14,23 @@ public partial class ApiService
 {
     public override Task<MsgReply> NetworkSet(Network network, ServerCallContext context)
     {
-        MsgReply msgReply = null;
+        MsgReply msgReply;
 
         if (network.NetworkID == 0) //id not set, so new network
-        {
-            network.NetworkID = Program.networkList.Network.Max(x => x.NetworkID) + 1; //get new id
-            Program.networkList.Network.Add(network);
-        }
+            msgReply = Program.NetworkManager.Add(network);
         else
-        {
-            var existingNetwork = Program.networkList.Network.FirstOrDefault(x => x.NetworkID == network.NetworkID);
-            if (existingNetwork == null) //Incorrect ID sent!
-            {
-                msgReply = new MsgReply() { Status = MsgReply.Types.Status.Fail, Message = "Node not found" };
-                return Task.FromResult(msgReply);
-            }
-            else
-            {
-                existingNetwork.Name = network.Name;
-                existingNetwork.BlockTime = network.BlockTime;
-                existingNetwork.StalledAfter = network.StalledAfter;
-                existingNetwork.NotifictionID = network.NotifictionID;
-            }
-        }
-
-        msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok, NewID32 = network.NetworkID };
-        File.WriteAllBytes(Path.Combine(path, "networklist"), Program.networkList.ToByteArray());
+            msgReply = Program.NetworkManager.Update(network);
+        
         return Task.FromResult(msgReply);
     }
 
     public override Task<NetworkList> NetworkListGet(Empty request, ServerCallContext context)
     {
-        return Task.FromResult(Program.networkList);
+        return Task.FromResult(Program.NetworkManager.ProtoWrapper);
     }
 
     public override Task<MsgReply> NetworkDelete(ID32 networkID, ServerCallContext context)
     {
-        MsgReply msgReply = null;
-
-        var user = Program.networkList.Network.FirstOrDefault(x => x.NetworkID == networkID.ID);
-        if (user == null)
-        {
-            msgReply = new MsgReply() { Status = MsgReply.Types.Status.Fail, Message = "Network not found" };
-        }
-        else
-        {
-            Program.networkList.Network.Remove(user);
-            File.WriteAllBytes(Path.Combine(path, "networklist"), Program.networkList.ToByteArray());
-            msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok };
-        }
-
-        return Task.FromResult(msgReply);
+        return Task.FromResult(Program.NetworkManager.Delete(networkID.ID));
     }
 }

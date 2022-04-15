@@ -19,10 +19,17 @@ public partial class ApiService
 
     public override Task<MsgReply> SettingsSet(Settings settings, ServerCallContext context)
     {
-        Program.Settings = settings;
-        // Write to file
-        File.WriteAllBytes(Path.Combine(Program.DataPath, "settings.dat"),settings.ToByteArray());
-        var msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok };
+        MsgReply msgReply;
+        try
+        {
+            clsSettings.Save();
+            msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok };
+        }
+        catch (Exception e)
+        {
+            msgReply = new MsgReply() { Status = MsgReply.Types.Status.Fail, Message = e.Message};
+        }
+        
         return Task.FromResult(msgReply);
     }
 

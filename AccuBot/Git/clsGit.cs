@@ -66,7 +66,7 @@ namespace AccuBot.Git
             }
         }
               
-        public Tag GetTag(Branch branch, Commit commit = null)
+        public Tag GetTag(Branch branch, LibGit2Sharp.Commit commit = null)
         {
             if (commit == null) commit = branch.Commits.FirstOrDefault();
             

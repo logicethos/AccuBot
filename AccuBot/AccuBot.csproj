@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Docker.DotNet" Version="3.125.5" />
       <PackageReference Include="DSharpPlus" Version="4.1.0" />
       <PackageReference Include="Grpc.AspNetCore" Version="2.42.0" />
       <PackageReference Include="Grpc.AspNetCore.Web" Version="2.43.0" />
@@ -49,6 +50,10 @@
       <None Include="DiscordBot\clsAlarm.cs" />
       <Compile Remove="DiscordBot\Commands\clsMTR.cs" />
       <None Include="DiscordBot\Commands\clsMTR.cs" />
+      <Compile Remove="Monitoring\clsManagar.cs" />
+      <None Include="Monitoring\clsManagar.cs" />
+      <Compile Remove="GRPC\Dashboard.cs" />
+      <None Include="GRPC\Dashboard.cs" />
     </ItemGroup>
 
 </Project>

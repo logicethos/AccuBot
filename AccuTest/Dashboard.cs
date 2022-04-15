@@ -15,12 +15,20 @@ static public class Dashboard
         int count = 0;
         using (var response = Program.GRPCClient.API.NetworkStatusStream(new StreamRequest() { Seconds = 1 }, Program.GRPCClient.Headers))
         {
-            while (await response.ResponseStream.MoveNext())
+            Thread.Sleep(100);
+            
+            var clientCancelled = new CancellationTokenSource();
+           // var abc = response.GetStatus();
+            
+            while (await response.ResponseStream.MoveNext(clientCancelled.Token))
             {
+                Thread.Sleep(1010);
                 Console.WriteLine($"Height: {response.ResponseStream.Current.Height}");
                 Console.WriteLine($"AverageTime: {response.ResponseStream.Current.AverageTime}");
                 if (++count == 5) break;
             }
+
+            ;
         }
 
         count = 0;

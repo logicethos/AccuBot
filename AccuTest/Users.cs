@@ -13,9 +13,11 @@ static public class Users
 
 
         GetUsers();
+       
         var newUser = AddUser();
+       //var reply2 = Program.GRPCClient.API.UserDelete(new ID32() { ID = 3},Program.GRPCClient.Headers);
         GetUsers();
-        
+       
         //Delete the user we added.
         Console.WriteLine("Delete User:");
         var reply2 = Program.GRPCClient.API.UserDelete(new ID32() { ID = newUser.UserID},Program.GRPCClient.Headers);
@@ -33,7 +35,7 @@ static public class Users
         //Display users
         foreach (var user in users.Users)
         {
-            Console.WriteLine($"Name: {user.Name}  email: {user.Email}");
+            Console.WriteLine($"Id: {user.UserID} Name: {user.Name}  email: {user.Email}");
         }
     }
 
@@ -49,6 +51,7 @@ static public class Users
             Tel = "+44 12345678",
             Discord = "@fred"
         };
+        
         var reply = Program.GRPCClient.API.UserSet(newUser,Program.GRPCClient.Headers);
 
         if (reply.Status == MsgReply.Types.Status.Ok)
