@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AccuBot.GRPC;
 using LettuceEncrypt;
-using Proto.API;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

@@ -17,7 +17,9 @@ service AccuBotAPI {
   rpc NetworkListGet(google.protobuf.Empty) returns (NetworkList);
   rpc NetworkSet(Network) returns (MsgReply);
   rpc NetworkDelete(ID32) returns (MsgReply);
-  rpc NetworkStatusStream(google.protobuf.Empty) returns (stream NetworkStream);
+  
+  //NetworkStatus
+  rpc NetworkStatusStream(google.protobuf.Empty) returns (stream NetworkStatus);
 
   //Tab for NodeGroups
   rpc NodeGroupListGet(google.protobuf.Empty) returns (NodeGroupList); //You will also need to get NetworkListGet & NotificationPolicy for the combo dropdown.
@@ -28,7 +30,9 @@ service AccuBotAPI {
   rpc NodeListGet(google.protobuf.Empty) returns (NodeList);  //You will also need to get the NodeGroupListGet for the combo dropdown.
   rpc NodeSet(Node) returns (MsgReply);
   rpc NodeDelete(ID32) returns (MsgReply);
-  rpc NodeStatusStream(google.protobuf.Empty) returns (stream NodeStream);
+  
+  //NodeStatus
+  rpc NodeStatusStream(google.protobuf.Empty) returns (stream NodeStatus);
   
   //Tab for SSL Certs
   rpc DomainCertificateListGet(google.protobuf.Empty) returns (DomainCertificateList);
@@ -66,12 +70,11 @@ message StreamRequest
   uint32 Seconds = 1;
 }
 
-enum StreamMessageType
+enum MessageType
 {
-  StatusUpdate  = 0;
-  Add           = 1;
-  Update        = 2;
-  Remove        = 3;
+  Add           = 0;
+  Update        = 1;
+  Remove        = 2;
 }
 
 
@@ -144,14 +147,6 @@ message NetworkStatus
     float     AverageTime     = 3;
 }
 
-message NetworkStream
-{
-  StreamMessageType messageType = 1;
-  uint32            nodeID      = 2;
-  Node              node        = 3;  //Sent with Add/Update  
-  NodeStatus        nodeStatus  = 4;  //Sent with StatusUpdate
-}
-
 
 message NodeGroup
 {
@@ -186,7 +181,6 @@ message NodeStatus
 
 message NodeStream
 {
-   StreamMessageType  messageType = 1;
    uint32             nodeID      = 2;
    Node               node        = 3;  //Sent with Add/Update  
    NodeStatus         nodeStatus  = 4;  //Sent with StatusUpdate

@@ -30,11 +30,15 @@ public class clsNodeGroupManagar : IProtoManager<Proto.API.NodeGroup,Proto.API.N
         }
         else
         {
-            existingPolicy.ProtoMessage.Name = nodeGroup.Name;
-            existingPolicy.ProtoMessage.NetworkID = nodeGroup.NetworkID;
-            existingPolicy.ProtoMessage.HeightNotifictionID = nodeGroup.HeightNotifictionID;
-            existingPolicy.ProtoMessage.LatencyNotifictionID = nodeGroup.LatencyNotifictionID;
-            existingPolicy.ProtoMessage.PingNotifictionID = nodeGroup.PingNotifictionID;
+            NodeGroupList.Update(nodeGroup, (origMessage, newMessage) =>
+            {
+                origMessage.Name = newMessage.Name;
+                origMessage.NetworkID = newMessage.NetworkID;
+                origMessage.HeightNotifictionID = newMessage.HeightNotifictionID;
+                origMessage.LatencyNotifictionID = newMessage.LatencyNotifictionID;
+                origMessage.PingNotifictionID = newMessage.PingNotifictionID;
+            });
+            
             msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok};
         }
         return msgReply;

@@ -7,6 +7,9 @@ public interface IProtoManager<TProto,TProtoWrapper> : IDisposable where TProto:
 {
     public TProtoWrapper ProtoWrapper { get; init; }
     public void Load();
+    
+    //public Action<TProto, TProto> MapFields { get; set; } = null
+    
     public MsgReply Update(TProto proto);
     public MsgReply Add(TProto proto);
     public MsgReply Delete(UInt32 ID);

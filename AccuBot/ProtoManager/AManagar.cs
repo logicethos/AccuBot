@@ -5,22 +5,29 @@ using Proto.API;
 
 namespace AccuBot.Monitoring;
 
-public abstract class clsManagar<TClass,TPClass,TPClassList> : IProtoManager<TPClass,TPClassList> where TClass:IProtoShadowClass<TPClass> where TPClass:IMessage where TPClassList:IMessage
+public abstract class AManagar<TClass,TPClass,TPClassList> : IProtoManager<TPClass,TPClassList> where TClass:IProtoShadowClass<TPClass> where TPClass:IMessage<TPClass> where TPClassList:IMessage<TPClassList>
 {
     public clsProtoShadow<TClass,TPClass> ManagerList { get; init; }
     public String DataFilePath { get; init; }
     public TPClassList ProtoWrapper { get; init; }
     private Action<TPClass, UInt32> IndexSelectorWrite;
     private Func<TPClass, IComparable<UInt32>> IndexSelector;
-    
+    private Func<TPClassList, IComparable<RepeatedField<TPClass>>> RepeatedFieldSelector;
 
-    public clsManagar(string path,Func<TPClass, IComparable<RepeatedField<TPClass>>> listSelector,Func<TPClass, IComparable<UInt32>> indexSelector, Action<TPClass, UInt32> indexSelectorWrite)
+    public Action<TPClass, TPClass> MapFields { get; set; } = null;
+
+    public AManagar(string path,Func<TPClassList, IComparable<RepeatedField<TPClass>>> repeatedFieldSelector, Func<TPClass, IComparable<RepeatedField<TPClass>>> listSelector,Func<TPClass, IComparable<UInt32>> indexSelector, Action<TPClass, UInt32> indexSelectorWrite)
     {
-        IndexSelector = indexSelector;
-        IndexSelectorWrite = indexSelectorWrite;
         DataFilePath = path;
-        ProtoWrapper = new TPClassList();
-        ManagerList = new clsProtoShadow<TClass, TPClass>(listSelector,indexSelector, indexSelectorWrite);
+        IndexSelector = indexSelector;              //Index field of our proto message
+        IndexSelectorWrite = indexSelectorWrite;    //Write action for index field.
+        RepeatedFieldSelector = repeatedFieldSelector;
+        
+        ProtoWrapper = (TPClassList)Activator.CreateInstance(typeof(TPClassList));
+
+        var repeatedfield = repeatedFieldSelector(ProtoWrapper) as RepeatedField<TPClass>;
+
+        ManagerList = new clsProtoShadow<TClass, TPClass>(repeatedfield, indexSelector, indexSelectorWrite);
         Load();
     }
 
@@ -31,14 +38,11 @@ public abstract class clsManagar<TClass,TPClass,TPClassList> : IProtoManager<TPC
         ManagerList.TryGetValue((UInt32)IndexSelector(network), out existingNetwork);
         if (existingNetwork == null) //Incorrect ID sent!
         {
-            msgReply = new MsgReply() { Status = MsgReply.Types.Status.Fail, Message = "Network not found" };
+            msgReply = new MsgReply() { Status = MsgReply.Types.Status.Fail, Message = $"{typeof(TPClass).FullName} not found" };
         }
         else
         {
-            existingNetwork.ProtoMessage.Name = network.Name;
-            existingNetwork.ProtoMessage.BlockTime = network.BlockTime;
-            existingNetwork.ProtoMessage.StalledAfter = network.StalledAfter;
-            existingNetwork.ProtoMessage.NotifictionID = network.NotifictionID;
+            ManagerList.Update(network,MapFields);
             msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok};
         }
         return msgReply;
@@ -59,7 +63,6 @@ public abstract class clsManagar<TClass,TPClass,TPClassList> : IProtoManager<TPC
 
         return msgReply;
     }
-
     
     public MsgReply Delete(UInt32 networkId)
     {
@@ -73,7 +76,7 @@ public abstract class clsManagar<TClass,TPClass,TPClassList> : IProtoManager<TPC
             }
             else
             {
-                msgReply = new MsgReply() { Status = MsgReply.Types.Status.Fail, Message = "Network not found" };
+                msgReply = new MsgReply() { Status = MsgReply.Types.Status.Fail, Message = $"{typeof(TPClass).FullName} not found" };
             }
         }
         catch (Exception ex)
@@ -86,15 +89,17 @@ public abstract class clsManagar<TClass,TPClass,TPClassList> : IProtoManager<TPC
 
     public void Load()
     {
-        TPClassList NetworkListProto;
+        TPClassList networkListProto;
         if (File.Exists(DataFilePath))
         {
             //Read from file
-            NetworkListProto = TPClassList.Parser.ParseFrom(File.ReadAllBytes(DataFilePath));
+           // networkListProto = TPClassList.Parser.ParseFrom(File.ReadAllBytes(DataFilePath));
+            
+            var par = new Google.Protobuf.MessageParser<TPClassList>(() => ProtoWrapper);
+            networkListProto = par.ParseFrom(File.ReadAllBytes(DataFilePath));
+            
+            ManagerList.Add(RepeatedFieldSelector(networkListProto) as RepeatedField<TPClass>);    
         }
-
-        ManagerList.Add(NetworkListProto.Network);
-
     }
 
     private void Save()
@@ -104,6 +109,7 @@ public abstract class clsManagar<TClass,TPClass,TPClassList> : IProtoManager<TPC
     
     public void Dispose()
     {
+        ManagerList.Dispose();
     }
     
 }

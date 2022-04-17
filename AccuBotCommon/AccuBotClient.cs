@@ -22,7 +22,7 @@ namespace AccuBotCommon
             if (options == null)
             {
                 options = new GrpcChannelOptions();
-
+                
                 if (host.Contains("localhost") || host.Contains("127.0.0."))  //Accept self
                 {
                     options.HttpHandler = new HttpClientHandler()
