@@ -27,10 +27,10 @@ namespace AccuBot
         static public DateTime AppStarted = DateTime.UtcNow;
         static public clsBotClient Bot;
 
-        static public clsNetworkManagar NetworkManager;
-        static public clsNodeManagar NodeManager;
-        static public clsNotificationPolicyManagar NotificationPolicyManager;
-        static public clsNodeGroupManagar NodeGroupManager;
+        static public clsNetworkManager NetworkManager;
+        static public clsNodeManager NodeManager;
+        static public clsNotificationPolicyManager NotificationPolicyManager;
+        static public clsNodeGroupManager NodeGroupManager;
         
         static public Proto.API.NetworkStatus networkStatus;
         
@@ -96,10 +96,10 @@ namespace AccuBot
             try
             {
                 
-                NetworkManager = new clsNetworkManagar();
-                NodeGroupManager = new clsNodeGroupManagar();
-                NotificationPolicyManager = new clsNotificationPolicyManagar();
-                NodeManager = new clsNodeManagar();
+                NetworkManager = new clsNetworkManager();
+                NodeGroupManager = new clsNodeGroupManager();
+                NotificationPolicyManager = new clsNotificationPolicyManager();
+                NodeManager = new clsNodeManager();
             }
             catch ( Exception ex)
             {

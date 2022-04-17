@@ -12,20 +12,20 @@ namespace AccuBot;
 /// <summary>
 /// Dictionary of proto messages, that are twinned with another class (a shadow class).
 /// </summary>
-/// <typeparam name="TClass">Our shadow class</typeparam>
-/// <typeparam name="TPClass">The proto message class, we want to extend</typeparam>
-public class clsProtoShadow<TClass,TPClass> : Dictionary<UInt32,TClass>,IDisposable where TPClass:IMessage where TClass:IProtoShadowClass<TPClass>
+/// <typeparam name="TProtoS">Our shadow class</typeparam>
+/// <typeparam name="TProto">The proto message class, we want to extend</typeparam>
+public class clsProtoShadow<TProtoS,TProto> : Dictionary<UInt32,TProtoS>,IDisposable where TProto:IMessage where TProtoS:IProtoShadowClass<TProto>
 {
-    public RepeatedField<TPClass> ProtoRepeatedField { get; init; }
-    private Action<TPClass, UInt32> IndexSelectorWrite;
-    private Func<TPClass, IComparable<UInt32>> IndexSelector;
+    public RepeatedField<TProto> ProtoRepeatedField { get; init; }
+    private Action<TProto, UInt32> IndexSelectorWrite;
+    private Func<TProto, IComparable<UInt32>> IndexSelector;
     private UInt32 MaxID;
 
     EventWaitHandle NewMessageWait = new EventWaitHandle(false, EventResetMode.ManualReset);
     private readonly object _lock = new object();
 
-    private TPClass _lastMessage;
-    private TPClass LastMessage
+    private TProto _lastMessage;
+    private TProto LastMessage
     {
         get
         {
@@ -40,21 +40,21 @@ public class clsProtoShadow<TClass,TPClass> : Dictionary<UInt32,TClass>,IDisposa
     }
 
 
-    public delegate void MapFields(TPClass origMessage, TPClass newMessage);
+    public delegate void MapFields(TProto origMessage, TProto newMessage);
     
-    public clsProtoShadow(RepeatedField<TPClass> protoRepeatedField, Func<TPClass, IComparable<UInt32>> indexSelector, Action<TPClass, UInt32> indexSelectorWrite) : base()
+    public clsProtoShadow(RepeatedField<TProto> protoRepeatedField, Func<TProto, IComparable<UInt32>> indexSelector, Action<TProto, UInt32> indexSelectorWrite) : base()
     {
         ProtoRepeatedField = protoRepeatedField;
         IndexSelector = indexSelector;
         IndexSelectorWrite = indexSelectorWrite;
     }
 
-    public void Update(TPClass newMessage,Action<TPClass,TPClass> mapfields = null)
+    public void Update(TProto newMessage,Action<TProto,TProto> mapfields = null)
     {
         lock (_lock)
         {
             var id = (UInt32)IndexSelector(newMessage);
-            TPClass origMessage = this[id].ProtoMessage;
+            TProto origMessage = this[id].ProtoMessage;
 
             if (mapfields == null)
             {
@@ -79,7 +79,7 @@ public class clsProtoShadow<TClass,TPClass> : Dictionary<UInt32,TClass>,IDisposa
     }
     
     
-    public new void Add(RepeatedField<TPClass> repeatedField)
+    public new void Add(RepeatedField<TProto> repeatedField)
     {
         lock (_lock)
         {
@@ -95,7 +95,7 @@ public class clsProtoShadow<TClass,TPClass> : Dictionary<UInt32,TClass>,IDisposa
                     IndexSelectorWrite(protoMessage, MaxID);
                 }
 
-                var valueClass = (TClass)Activator.CreateInstance(typeof(TClass), protoMessage);
+                var valueClass = (TProtoS)Activator.CreateInstance(typeof(TProtoS), protoMessage);
                 base.Add(id, valueClass);
             }
 
@@ -103,7 +103,7 @@ public class clsProtoShadow<TClass,TPClass> : Dictionary<UInt32,TClass>,IDisposa
         }
     }
 
-    private UInt32 GetMaxID(RepeatedField<TPClass> repeatedField)
+    private UInt32 GetMaxID(RepeatedField<TProto> repeatedField)
     {
         UInt32 maxVal = 0;
         foreach (var message in repeatedField)
@@ -115,7 +115,7 @@ public class clsProtoShadow<TClass,TPClass> : Dictionary<UInt32,TClass>,IDisposa
     }
     
     
-    public new UInt32 Add(TPClass value)
+    public new UInt32 Add(TProto value)
     {
         lock (_lock)
         {
@@ -125,7 +125,7 @@ public class clsProtoShadow<TClass,TPClass> : Dictionary<UInt32,TClass>,IDisposa
             IndexSelectorWrite(value, MaxID);
 
             ProtoRepeatedField.Add(value);
-            var valueClass = (TClass)Activator.CreateInstance(typeof(TClass), value);
+            var valueClass = (TProtoS)Activator.CreateInstance(typeof(TProtoS), value);
 
             base.Add(MaxID, valueClass);
             LastMessage = value;
@@ -133,7 +133,7 @@ public class clsProtoShadow<TClass,TPClass> : Dictionary<UInt32,TClass>,IDisposa
         }
     }
 
-    public new bool Remove(TPClass value)
+    public new bool Remove(TProto value)
     {
         return Remove((UInt32)IndexSelector(value));
     }
@@ -154,7 +154,7 @@ public class clsProtoShadow<TClass,TPClass> : Dictionary<UInt32,TClass>,IDisposa
         }
     }
 
-    public async Task NextMessageWait(IServerStreamWriter<TPClass> serverStreamWriter)
+    public async Task NextMessageWait(IServerStreamWriter<TProto> serverStreamWriter)
     {
         while (NewMessageWait.WaitOne())
         {

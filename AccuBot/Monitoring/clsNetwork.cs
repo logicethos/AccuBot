@@ -82,7 +82,7 @@ namespace AccuBot
         {
             get
             {
-                return (uint)Program.NodeManager.NodeList.Count(x=>x.Value.Network == this && x.Value.ProtoMessage.Monitor);
+                return (uint)Program.NodeManager.ManagerList.Count(x=>x.Value.Network == this && x.Value.ProtoMessage.Monitor);
             }
         }
         

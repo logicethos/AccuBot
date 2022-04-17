@@ -2,11 +2,11 @@ using Google.Protobuf;
 using Proto.API;
 
 namespace AccuBot;
-public interface IProtoManager<TProto,TProtoWrapper> : IDisposable where TProto:Google.Protobuf.IMessage where TProtoWrapper:Google.Protobuf.IMessage
+public interface IManager<TProto,TProtoList> : IDisposable where TProto:Google.Protobuf.IMessage where TProtoList:Google.Protobuf.IMessage
 //public interface IProtoManager<TProto,TProtoShadow> where  TProto:Google.Protobuf.IMessage where TProtoShadow:IProtoShadowClass<TProto>
 {
-    public TProtoWrapper ProtoWrapper { get; init; }
-    public void Load();
+    public TProtoList ProtoWrapper { get; init; }
+    public void Load(Func<TProtoList> demoData);
     
     //public Action<TProto, TProto> MapFields { get; set; } = null
     
