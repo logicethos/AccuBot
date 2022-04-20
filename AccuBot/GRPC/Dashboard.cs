@@ -25,7 +25,7 @@ public partial class ApiService
             {
                 Console.WriteLine("NodeStatusStream next");
                 height++;
-                foreach (var node in Program.NodeManager.NodeList)
+                foreach (var node in Program.NodeManager.ManagerList)
                 {
                     await responseStream.WriteAsync(new NodeStatus
                     {
@@ -35,7 +35,8 @@ public partial class ApiService
                         Ping = 5 * random.NextSingle()
                     });
                 }
-                await Task.Delay((int)request.Seconds * 1000, context.CancellationToken);
+
+                await Task.Delay((int)request.Milliseconds,context.CancellationToken);
             }
             Console.WriteLine("NodeStatusStream End");
         }
@@ -64,10 +65,11 @@ public partial class ApiService
             while (!context.CancellationToken.IsCancellationRequested)
             {
                 Console.WriteLine($"sw1: {sw.ElapsedMilliseconds}");
-                Console.WriteLine("NetworkStatusStream next");
+                
                 height++;
-                foreach (var network in Program.NetworkManager.NetworkList)
+                foreach (var network in Program.NetworkManager.ManagerList)
                 {
+                    Console.WriteLine("Send");
                     await responseStream.WriteAsync(new NetworkStatus
                     {
                         NetworkID = network.Key,
@@ -75,8 +77,7 @@ public partial class ApiService
                         AverageTime = 1+(float)random.NextDouble()
                     });
                 }
-                await Task.Delay((int)request.Seconds * 1000, context.CancellationToken);
-                Console.WriteLine($"sw2: {sw.ElapsedMilliseconds}");
+                await Task.Delay((int)request.Milliseconds, context.CancellationToken);
             }
             Console.WriteLine($"NetworkStatusStream End CanRequest: {context.CancellationToken.IsCancellationRequested}");
             Console.WriteLine($"sw3: {sw.ElapsedMilliseconds}");

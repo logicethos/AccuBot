@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AccuBot.GRPC;
 
-//[Authorize]
+[Authorize]
 public partial class ApiService : AccuBotAPI.AccuBotAPIBase
 {
     public static ApiService instance;

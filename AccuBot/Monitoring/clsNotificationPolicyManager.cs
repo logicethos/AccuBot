@@ -20,9 +20,8 @@ public class clsNotificationPolicyManager : AManager<clsNotificationPolicy,Proto
             origMessage.Call = newMessage.Call;
             origMessage.Discord = newMessage.Discord;
         });
+        Load();
     }
-
-    
 
 
     public void Load()

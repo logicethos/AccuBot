@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0.201-focal-amd64
+FROM mcr.microsoft.com/dotnet/sdk:6.0.201-focal-amd64 AS build
 
 ARG BRANCH="main"
 
@@ -8,8 +8,12 @@ RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime
 
 
 RUN apt update \
-	&& apt -y install joe less gnupg ssh wget curl net-tools iputils-ping  git locales locales-all mtr-tiny 
+	&& apt -y install joe less gnupg ssh wget curl net-tools iputils-ping  git locales locales-all mtr-tiny bash
     #libncurses5-dev autoconf libncursesw5-dev \
+
+RUN apt clean
+RUN rm -rf /var/lib/apt/lists/*
+
     
 #RUN mkdir -p /app
 #WORKDIR /app
@@ -20,14 +24,12 @@ RUN apt update \
 WORKDIR /
 RUN git clone -b ${BRANCH} https://github.com/logicethos/AccuBot.git
 WORKDIR /AccuBot
-RUN dotnet build AccuBotCommon --configuration Release -property:GitCommit=$(git rev-parse HEAD)
-RUN dotnet build AccuBot --configuration Release -property:GitCommit=$(git rev-parse HEAD)
-
+RUN dotnet build AccuBotCommon --configuration Release --os linux -property:GitCommit=$(git rev-parse HEAD) --output /app
+RUN dotnet build AccuBot --configuration Release --os linux -property:GitCommit=$(git rev-parse HEAD) --output /app
     
-RUN apt clean
-RUN rm -rf /var/lib/apt/lists/*
 
 #COPY entrypoint.sh /entrypoint.sh
 #RUN chmod +x /entrypoint.sh
+WORKDIR /app
 
-ENTRYPOINT ["dotnet /AccuBot/AccuBot/bin/Release/Accubot.exe"]
+ENTRYPOINT ["dotnet AccuBot.dll"]

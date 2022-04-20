@@ -14,7 +14,7 @@ public abstract class AManager<TProtoS,TProto,TProtoList> : IManager<TProto,TPro
     private Func<TProto, IComparable<UInt32>> IndexSelector;
     private Func<TProtoList, RepeatedField<TProto>> RepeatedFieldSelector;
 
-    public Action<TProto, TProto> MapFields { get; set; } = null;
+    public Action<TProto, TProto> MapFields { get; init; } = null;
 
     public AManager(string path,
                     Func<TProtoList, RepeatedField<TProto>> repeatedFieldSelector,
@@ -30,7 +30,7 @@ public abstract class AManager<TProtoS,TProto,TProtoList> : IManager<TProto,TPro
         var repeatedfield = repeatedFieldSelector(ProtoWrapper);
 
         ManagerList = new clsProtoShadow<TProtoS, TProto>(repeatedfield, indexSelector, indexSelectorWrite);
-        Load();
+
     }
 
     public MsgReply Update(TProto network)
@@ -89,7 +89,7 @@ public abstract class AManager<TProtoS,TProto,TProtoList> : IManager<TProto,TPro
         return msgReply;
     }
 
-    public void Load(Func<TProtoList> demoData = null)
+    public async void Load(Func<TProtoList> demoData = null)
     {
         TProtoList networkListProto;
         var parser = new Google.Protobuf.MessageParser<TProtoList>(() => ProtoWrapper);
@@ -97,11 +97,12 @@ public abstract class AManager<TProtoS,TProto,TProtoList> : IManager<TProto,TPro
         {
             //Read from file
             networkListProto = parser.ParseFrom(File.ReadAllBytes(DataFilePath));
-            ManagerList.Add(RepeatedFieldSelector(networkListProto) as RepeatedField<TProto>);    
+            ManagerList.Add(RepeatedFieldSelector(networkListProto));    
         }
-        else
+        else if (demoData != null)
         {
             networkListProto = demoData();
+            ManagerList.Add(RepeatedFieldSelector(networkListProto)); 
         }
     }
 

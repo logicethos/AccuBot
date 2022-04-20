@@ -7,7 +7,10 @@ namespace AccuBot.Monitoring;
 
 public class clsNetworkManager : AManager<clsNetwork,Proto.API.Network,Proto.API.NetworkList>
 {
+
+    public ProtoPubSub<Proto.API.NetworkStatus> NetworkStatusSubSub = new ProtoPubSub<NetworkStatus>();
     
+
     public clsNetworkManager() : base(Path.Combine(Program.DataPath, "networklist"),
                 x=>x.Network,
                 x=>x.NetworkID,
@@ -21,6 +24,7 @@ public class clsNetworkManager : AManager<clsNetwork,Proto.API.Network,Proto.API
             origMessage.StalledAfter = newMessage.StalledAfter;
             origMessage.NotifictionID = newMessage.NotifictionID;
         });
+        Load();
     }
 
     
@@ -49,9 +53,5 @@ public class clsNetworkManager : AManager<clsNetwork,Proto.API.Network,Proto.API
         }));
     }
 
-    
-    public void Dispose()
-    {
-    }
     
 }

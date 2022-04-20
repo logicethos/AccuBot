@@ -108,7 +108,7 @@ namespace AccuBot
         
         public async Task RunAsync()
         {
-            await _client.ConnectAsync();
+         //   await _client.ConnectAsync();
          //   await WaitForCancellationAsync();
         }
 

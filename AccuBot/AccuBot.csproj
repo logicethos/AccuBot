@@ -50,8 +50,6 @@
       <None Include="DiscordBot\clsAlarm.cs" />
       <Compile Remove="DiscordBot\Commands\clsMTR.cs" />
       <None Include="DiscordBot\Commands\clsMTR.cs" />
-      <Compile Remove="GRPC\Dashboard.cs" />
-      <None Include="GRPC\Dashboard.cs" />
     </ItemGroup>
 
 </Project>

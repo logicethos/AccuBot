@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using Proto.API;
 
 namespace AccuBot
 {
     public class clsNetwork : IProtoShadowClass<Proto.API.Network>
     {
         public Proto.API.Network ProtoMessage {get; init;}
+        
+        public Proto.API.NetworkStatus Status {get; init;}
         
         public uint TopHeight {get; private set;}
         public DateTime? LastHeight  {get; private set;}
@@ -23,9 +26,11 @@ namespace AccuBot
         public clsNetwork(Proto.API.Network network)
         {
             ProtoMessage = network;
+            Status = new NetworkStatus();
+            
         }
         
-         public void SetTopHeight(uint height)
+        public void SetTopHeight(uint height)
         {
             TopHeight = height;
             

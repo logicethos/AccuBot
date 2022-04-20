@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
@@ -89,10 +90,15 @@ namespace AccuBot
             app.UseRouting();
             app.UseGrpcWeb(); 
             app.UseCors();
-            app.UseStaticFiles();
+            
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),Program.DataPath,"www")),
+                RequestPath = ""
+            });
+            
             app.UseAuthentication();
             app.UseAuthorization();
-            
             
             app.UseEndpoints(endpoints =>
             {
@@ -103,12 +109,12 @@ namespace AccuBot
                 
                 // endpoints.MapFallbackToPage("/Index.razor");
 
-                endpoints.MapGet("/",
+                /*endpoints.MapGet("/",
                     async context =>
                     {
                         await context.Response.WriteAsync(
                             "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-                    });
+                    });*/
             });
             
         }

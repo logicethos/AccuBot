@@ -22,6 +22,8 @@ public class clsProtoShadow<TProtoS,TProto> : Dictionary<UInt32,TProtoS>,IDispos
     private UInt32 MaxID;
 
     EventWaitHandle NewMessageWait = new EventWaitHandle(false, EventResetMode.ManualReset);
+    public event EventHandler<TProto> NewMessage;
+    
     private readonly object _lock = new object();
 
     private TProto _lastMessage;
@@ -73,12 +75,15 @@ public class clsProtoShadow<TProtoS,TProto> : Dictionary<UInt32,TProtoS>,IDispos
             {
                 mapfields(origMessage, newMessage);
             }
-
+            NewMessage?.Invoke(this,newMessage);
             LastMessage = newMessage;
         }
     }
     
-    
+    /// <summary>
+    /// Add bulk items.  Note: No Events triggered here, for subscribed consumers.  
+    /// </summary>
+    /// <param name="repeatedField"></param>
     public new void Add(RepeatedField<TProto> repeatedField)
     {
         lock (_lock)
@@ -98,7 +103,7 @@ public class clsProtoShadow<TProtoS,TProto> : Dictionary<UInt32,TProtoS>,IDispos
                 var valueClass = (TProtoS)Activator.CreateInstance(typeof(TProtoS), protoMessage);
                 base.Add(id, valueClass);
             }
-
+            
             ProtoRepeatedField.AddRange(repeatedField);
         }
     }
@@ -129,6 +134,7 @@ public class clsProtoShadow<TProtoS,TProto> : Dictionary<UInt32,TProtoS>,IDispos
 
             base.Add(MaxID, valueClass);
             LastMessage = value;
+            NewMessage?.Invoke(this,value);
             return MaxID;
         }
     }
@@ -146,6 +152,7 @@ public class clsProtoShadow<TProtoS,TProto> : Dictionary<UInt32,TProtoS>,IDispos
             {
                 var value = ProtoRepeatedField.FirstOrDefault(x => IndexSelector(x).Equals(id));
                 if (value != null) ProtoRepeatedField.Remove(value);
+                NewMessage?.Invoke(this,value);
                 LastMessage = value;
                 return true;
             }

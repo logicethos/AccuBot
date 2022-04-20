@@ -9,9 +9,11 @@ namespace AccuBot.Monitoring;
 public class clsNodeManager : AManager<clsNode, Proto.API.Node,Proto.API.NodeList>
 {
    
+    public ProtoPubSub<Proto.API.NodeStatus> NodeStatusSubSub = new ProtoPubSub<NodeStatus>();
+    
     public clsNodeManager(): base(Path.Combine(Program.DataPath, "nodes"),
         x=>x.Nodes,
-        x=>x.NodeGroupID,
+        x=>x.NodeID,
         (x, y) => x.NodeID = y)
     {
         
@@ -22,7 +24,8 @@ public class clsNodeManager : AManager<clsNode, Proto.API.Node,Proto.API.NodeLis
             origMessage.Monitor = newMessage.Monitor;
             origMessage.NodeGroupID = newMessage.NodeGroupID;
         });
-        
+     
+        Load();
         
     }
 

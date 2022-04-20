@@ -22,7 +22,7 @@ public class clsNodeGroupManager : AManager<clsNodeGroup,Proto.API.NodeGroup,Pro
             origMessage.LatencyNotifictionID = newMessage.LatencyNotifictionID;
             origMessage.PingNotifictionID = newMessage.PingNotifictionID;
         });
-        
+        Load();
     }
 
     
@@ -55,7 +55,4 @@ public class clsNodeGroupManager : AManager<clsNodeGroup,Proto.API.NodeGroup,Pro
     }
     
     
-    public void Dispose()
-    {
-    }
 }

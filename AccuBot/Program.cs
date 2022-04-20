@@ -95,7 +95,6 @@ namespace AccuBot
 
             try
             {
-                
                 NetworkManager = new clsNetworkManager();
                 NodeGroupManager = new clsNodeGroupManager();
                 NotificationPolicyManager = new clsNotificationPolicyManager();
@@ -105,8 +104,6 @@ namespace AccuBot
             {
                 Log.Fatal(ex,"Startup");                
             }
-
-
 
 
             const int apiTimeout = 2000;

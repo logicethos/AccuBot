@@ -14,24 +14,24 @@ namespace AccuTest
         static public AccuBotCommon.AccuBotClient GRPCClient;
 
        
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            
-            GRPCClient = new AccuBotCommon.AccuBotClient("https://localhost:5001");
-            //GRPCClient = new AccuBotCommon.AccuBotClient("https://red2.logicethos.com");
+            //GRPCClient = new AccuBotCommon.AccuBotClient("https://localhost:5001");
+            GRPCClient = new AccuBotCommon.AccuBotClient("https://red2.logicethos.com");
             var headers = GRPCClient.Connect();
 
+          //  Networks.Test();
+         //   await Dashboard.Test();
             
-            Dashboard.Test();
+          //  return;
             
-            return;
-            
-            Users.Test();
-             Networks.Test();
-              NotificationPolicys.Test();
+           // Users.Test();
+           //  Networks.Test();
+           //   NotificationPolicys.Test();
               Nodes.Test();
-              NodeGroups.Test();
-              Settings.Test();
+           //   NodeGroups.Test();
+           //   Settings.Test();
+           Thread.Sleep(10000);
         }
     }
 

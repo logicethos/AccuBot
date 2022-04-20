@@ -15,6 +15,8 @@ static public class Users
         GetUsers();
        
         var newUser = AddUser();
+        var updateUser = UpdateUser(newUser.UserID);
+        
        //var reply2 = Program.GRPCClient.API.UserDelete(new ID32() { ID = 3},Program.GRPCClient.Headers);
         GetUsers();
        
@@ -66,5 +68,34 @@ static public class Users
             return null;
         }
     }
+
+    public static Proto.API.User UpdateUser(uint id)
+    {
+        //*** Add a user
+        Console.WriteLine("Update User:");
+        var newUser = new Proto.API.User
+        {
+            UserID = id, //Set as zero when adding.  Or the original UserID when updating
+            Name = "Fred Sausage",
+            Email = "fred@email.com",
+            Tel = "+44 1234eer5678",
+            Discord = "@fred"
+        };
+        
+        var reply = Program.GRPCClient.API.UserSet(newUser,Program.GRPCClient.Headers);
+
+        if (reply.Status == MsgReply.Types.Status.Ok)
+        {
+            newUser.UserID = reply.NewID32; //The server returns the new ID.
+            Console.WriteLine($"Update user id : {newUser.UserID}");
+            return newUser;
+        }
+        else
+        {
+            Console.WriteLine(reply.Message); //Error
+            return null;
+        }
+    }
+
     
 }

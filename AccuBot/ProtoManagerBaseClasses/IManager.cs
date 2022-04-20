@@ -8,7 +8,7 @@ public interface IManager<TProto,TProtoList> : IDisposable where TProto:Google.P
     public TProtoList ProtoWrapper { get; init; }
     public void Load(Func<TProtoList> demoData);
     
-    //public Action<TProto, TProto> MapFields { get; set; } = null
+    public Action<TProto, TProto> MapFields { get; init; }
     
     public MsgReply Update(TProto proto);
     public MsgReply Add(TProto proto);
