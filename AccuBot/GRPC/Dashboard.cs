@@ -8,6 +8,7 @@ using Proto.API;
 using Google.Protobuf.WellKnownTypes;
 using System.IO;
 using Google.Protobuf;
+using Serilog;
 
 namespace AccuBot.GRPC;
 
@@ -19,7 +20,6 @@ public partial class ApiService
         {
             var random = new Random();
             UInt32 height = 1000000000;
-            await Task.Delay(10);
             Console.WriteLine("NodeStatusStream started");
             while (!context.CancellationToken.IsCancellationRequested)
             {
@@ -34,10 +34,9 @@ public partial class ApiService
                         Height = height,
                         Ping = 5 * random.NextSingle()
                     });
-                    await Task.Delay(300, context.CancellationToken);
+                    Log.Information($"{node.Key}");
+                    await Task.Delay((int)request.Milliseconds / Program.NodeProtoDictionaryShadow.ManagerList.ProtoRepeatedField.Count, context.CancellationToken);
                 }
-
-                await Task.Delay((int)request.Milliseconds,context.CancellationToken);
             }
             Console.WriteLine("NodeStatusStream End");
         }
