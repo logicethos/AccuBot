@@ -17,20 +17,20 @@ public partial class ApiService
         MsgReply msgReply;
 
         if (network.NetworkID == 0) //id not set, so new network
-            msgReply = Program.NetworkManager.Add(network);
+            msgReply = Program.NetworkProtoDictionaryShadow.Add(network);
         else
-            msgReply = Program.NetworkManager.Update(network);
+            msgReply = Program.NetworkProtoDictionaryShadow.Update(network);
         
         return Task.FromResult(msgReply);
     }
 
     public override Task<NetworkList> NetworkListGet(Empty request, ServerCallContext context)
     {
-        return Task.FromResult(Program.NetworkManager.ProtoWrapper);
+        return Task.FromResult(Program.NetworkProtoDictionaryShadow.ProtoWrapper);
     }
 
     public override Task<MsgReply> NetworkDelete(ID32 networkID, ServerCallContext context)
     {
-        return Task.FromResult(Program.NetworkManager.Delete(networkID.ID));
+        return Task.FromResult(Program.NetworkProtoDictionaryShadow.Delete(networkID.ID));
     }
 }

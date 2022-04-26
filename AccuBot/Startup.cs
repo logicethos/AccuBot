@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace AccuBot
 {
@@ -90,13 +91,21 @@ namespace AccuBot
             app.UseRouting();
             app.UseGrpcWeb(); 
             app.UseCors();
-            
-            app.UseStaticFiles(new StaticFileOptions
+
+
+            if (!String.IsNullOrEmpty(Program.DataPathWWW) &&  Directory.Exists(Program.DataPathWWW))
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),Program.DataPath,"www")),
-                RequestPath = ""
-            });
-            
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(Program.DataPathWWW),
+                    RequestPath = ""
+                });
+            }
+            else
+            {
+                Log.Error($"WWW directory does not exist ({Program.DataPathWWW})");
+            }
+
             app.UseAuthentication();
             app.UseAuthorization();
             

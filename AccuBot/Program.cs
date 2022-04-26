@@ -23,14 +23,16 @@ namespace AccuBot
     public class Program
     {
         public static Proto.API.Settings Settings;
-        public static string DataPath = "data";
+        public static string DataPath { get; private set; }
+        public static string DataPathWWW { get; private set; }
+        
         static public DateTime AppStarted = DateTime.UtcNow;
         static public clsBotClient Bot;
 
-        static public clsNetworkManager NetworkManager;
-        static public clsNodeManager NodeManager;
-        static public clsNotificationPolicyManager NotificationPolicyManager;
-        static public clsNodeGroupManager NodeGroupManager;
+        static public clsNetworkProtoDictionaryShadow NetworkProtoDictionaryShadow;
+        static public clsNodeProtoDictionaryShadow NodeProtoDictionaryShadow;
+        static public clsNotificationPolicyProtoDictionaryShadow NotificationPolicyProtoDictionaryShadow;
+        static public clsNodeGroupProtoDictionaryShadow NodeGroupProtoDictionaryShadow;
         
         static public Proto.API.NetworkStatus networkStatus;
         
@@ -90,15 +92,19 @@ namespace AccuBot
                 .WriteTo.Console()
               //  .WriteTo.File("logfile.log", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
+
+            DataPath = Environment.GetEnvironmentVariable("ACCUBOT_DATA", EnvironmentVariableTarget.Process) ?? "data";
+            DataPathWWW = Environment.GetEnvironmentVariable("ACCUBOT_WWW", EnvironmentVariableTarget.Process) ?? "www";
+            
             
             clsSettings.Load();
 
             try
             {
-                NetworkManager = new clsNetworkManager();
-                NodeGroupManager = new clsNodeGroupManager();
-                NotificationPolicyManager = new clsNotificationPolicyManager();
-                NodeManager = new clsNodeManager();
+                NetworkProtoDictionaryShadow = new clsNetworkProtoDictionaryShadow();
+                NodeGroupProtoDictionaryShadow = new clsNodeGroupProtoDictionaryShadow();
+                NotificationPolicyProtoDictionaryShadow = new clsNotificationPolicyProtoDictionaryShadow();
+                NodeProtoDictionaryShadow = new clsNodeProtoDictionaryShadow();
             }
             catch ( Exception ex)
             {

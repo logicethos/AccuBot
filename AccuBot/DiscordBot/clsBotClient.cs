@@ -11,6 +11,7 @@ using System.Diagnostics;
 using AccuBot.DiscordBot;
 using AccuBot.Git;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace AccuBot
 {
@@ -108,9 +109,30 @@ namespace AccuBot
         
         public async Task RunAsync()
         {
-         //   await _client.ConnectAsync();
-         //   await WaitForCancellationAsync();
+            try
+            {
+                Log.Information("Discord: RunAsync");
+               await _client.ConnectAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex,$"Discord");
+            }
         }
+
+        public async Task ReconnectAsync()
+        {
+            try
+            {
+                Log.Information("Discord: ReconnectAsync");
+                await _client.ReconnectAsync(true);    
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex,$"Discord");
+            }
+        }
+        
 
         /*
         private async Task WaitForCancellationAsync()

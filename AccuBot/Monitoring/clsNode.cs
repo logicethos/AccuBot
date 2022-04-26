@@ -22,8 +22,8 @@ namespace Accubot
         public clsNode(Proto.API.Node nodeProto)
         {
             ProtoMessage = nodeProto;
-            NodeGroup = Program.NodeGroupManager.ManagerList[ProtoMessage.NodeGroupID];
-            Network = Program.NetworkManager.ManagerList[NodeGroup.ProtoMessage.NetworkID];
+            NodeGroup = Program.NodeGroupProtoDictionaryShadow.ManagerList[ProtoMessage.NodeGroupID];
+            Network = Program.NetworkProtoDictionaryShadow.ManagerList[NodeGroup.ProtoMessage.NetworkID];
             //TODO check for null
         }
         

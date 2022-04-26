@@ -22,6 +22,7 @@ public partial class ApiService
         MsgReply msgReply;
         try
         {
+            clsSettings.Update(settings);
             clsSettings.Save();
             msgReply = new MsgReply() { Status = MsgReply.Types.Status.Ok };
         }

@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using Docker.DotNet.Models;
 using Google.Protobuf;
 using Proto.API;
 namespace AccuBot;
@@ -16,8 +17,7 @@ public static class clsSettings
         
         Directory.CreateDirectory(Program.DataPath);
         Directory.CreateDirectory(Path.Combine(Program.DataPath, "certs"));
-        Directory.CreateDirectory(Path.Combine(Program.DataPath, "www"));
-        
+
         GetSettings();
     }
     
@@ -55,6 +55,36 @@ public static class clsSettings
             };
         }
     }
+
+
+    static public void Update(Proto.API.Settings newSettigs)
+    {
+        bool flagRestartDiscord = false;
+        
+        var originalProperties = Program.Settings.GetType().GetProperties();
+
+        //For each updated property
+        foreach (var updateProperty in newSettigs.GetType().GetProperties())
+        {
+            var originalProperty = originalProperties.FirstOrDefault(x =>
+                x.Name == updateProperty.Name && x.GetValue(x) == updateProperty.GetValue(updateProperty));
+            if (originalProperty != null)
+            {
+                switch (updateProperty.Name)
+                {
+                    case nameof(Program.Settings.DiscordToken):
+                    case nameof(Program.Settings.DiscordClientID):
+                        flagRestartDiscord = true;
+                        break;
+                }
+                originalProperty.SetValue(originalProperty, updateProperty.GetValue(updateProperty));
+            }
+        }
+
+        if (flagRestartDiscord) Program.Bot.RunAsync();
+
+    }
+    
 
     static public void Save()
     {

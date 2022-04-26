@@ -30,6 +30,10 @@ RUN dotnet build AccuBot --configuration Release --os linux -property:GitCommit=
 
 #COPY entrypoint.sh /entrypoint.sh
 #RUN chmod +x /entrypoint.sh
-WORKDIR /app
 
-ENTRYPOINT ["dotnet AccuBot.dll"]
+ENV ACCUBOT_DATA = "/data"
+ENV ACCUBOT_WWW = "/www"
+
+WORKDIR /app
+ENTRYPOINT ["/usr/bin/dotnet","AccuBot.dll"]
+#ENTRYPOINT ["dotnet AccuBot.dll"]

@@ -14,7 +14,7 @@ public partial class ApiService
 {
      public override Task<NotificationPolicyList> NotificationPolicyListGet(Empty request, ServerCallContext context)
     {
-        return Task.FromResult(Program.NotificationPolicyManager.ProtoWrapper);
+        return Task.FromResult(Program.NotificationPolicyProtoDictionaryShadow.ProtoWrapper);
     }
 
     public override Task<MsgReply> NotificationPolicySet(NotificationPolicy notificationPolicy, ServerCallContext context)
@@ -22,15 +22,15 @@ public partial class ApiService
         MsgReply msgReply;
 
         if (notificationPolicy.NotifictionID == 0) //id not set, so new network
-            msgReply = Program.NotificationPolicyManager.Add(notificationPolicy);
+            msgReply = Program.NotificationPolicyProtoDictionaryShadow.Add(notificationPolicy);
         else
-            msgReply = Program.NotificationPolicyManager.Update(notificationPolicy);
+            msgReply = Program.NotificationPolicyProtoDictionaryShadow.Update(notificationPolicy);
         
         return Task.FromResult(msgReply);
     }
 
     public override Task<MsgReply> NotificationPolicyDelete(ID32 notificationPolicyID, ServerCallContext context)
     {
-        return Task.FromResult(Program.NotificationPolicyManager.Delete(notificationPolicyID.ID));
+        return Task.FromResult(Program.NotificationPolicyProtoDictionaryShadow.Delete(notificationPolicyID.ID));
     }
 }

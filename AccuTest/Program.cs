@@ -1,7 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using AccuTest;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
@@ -21,9 +18,9 @@ namespace AccuTest
             var headers = GRPCClient.Connect();
 
           //  Networks.Test();
-         //   await Dashboard.Test();
+            await Dashboard.Test();
             
-          //  return;
+            return;
             
            // Users.Test();
            //  Networks.Test();

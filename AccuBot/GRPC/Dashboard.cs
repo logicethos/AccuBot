@@ -25,7 +25,7 @@ public partial class ApiService
             {
                 Console.WriteLine("NodeStatusStream next");
                 height++;
-                foreach (var node in Program.NodeManager.ManagerList)
+                foreach (var node in Program.NodeProtoDictionaryShadow.ManagerList)
                 {
                     await responseStream.WriteAsync(new NodeStatus
                     {
@@ -34,6 +34,7 @@ public partial class ApiService
                         Height = height,
                         Ping = 5 * random.NextSingle()
                     });
+                    await Task.Delay(300, context.CancellationToken);
                 }
 
                 await Task.Delay((int)request.Milliseconds,context.CancellationToken);
@@ -67,7 +68,7 @@ public partial class ApiService
                 Console.WriteLine($"sw1: {sw.ElapsedMilliseconds}");
                 
                 height++;
-                foreach (var network in Program.NetworkManager.ManagerList)
+                foreach (var network in Program.NetworkProtoDictionaryShadow.ManagerList)
                 {
                     Console.WriteLine("Send");
                     await responseStream.WriteAsync(new NetworkStatus

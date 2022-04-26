@@ -17,20 +17,20 @@ public partial class ApiService
         MsgReply msgReply;
 
         if (node.NodeID == 0) //id not set, so new network
-            msgReply = Program.NodeManager.Add(node);
+            msgReply = Program.NodeProtoDictionaryShadow.Add(node);
         else
-            msgReply = Program.NodeManager.Update(node);
+            msgReply = Program.NodeProtoDictionaryShadow.Update(node);
         
         return Task.FromResult(msgReply);
     }
     
     public override Task<Proto.API.NodeList> NodeListGet(Empty request, ServerCallContext context)
     {
-        return Task.FromResult(Program.NodeManager.ProtoWrapper);
+        return Task.FromResult(Program.NodeProtoDictionaryShadow.ProtoWrapper);
     }
 
     public override Task<MsgReply> NodeDelete(ID32 nodeID, ServerCallContext context)
     {
-        return Task.FromResult(Program.NodeManager.Delete(nodeID.ID));
+        return Task.FromResult(Program.NodeProtoDictionaryShadow.Delete(nodeID.ID));
     }
 }
