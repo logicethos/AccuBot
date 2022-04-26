@@ -19,7 +19,7 @@ public partial class ApiService
         try
         {
             var random = new Random();
-            UInt32 height = 1000000000;
+            UInt32 height = 10000000;
             Console.WriteLine("NodeStatusStream started");
             while (!context.CancellationToken.IsCancellationRequested)
             {
