@@ -65,19 +65,22 @@ namespace AccuBot
                     .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
             }));
 
-            services.AddLettuceEncrypt(c =>
+            if (!String.IsNullOrEmpty(Program.DomainName))
+            {
+            
+                services.AddLettuceEncrypt(c =>
                 {
                     c.DomainNames = new[] { "red2.logicethos.com" };
                     c.EmailAddress = "stuart@logicethos.com";
                     c.AcceptTermsOfService = true;
-                    c.RenewDaysInAdvance = TimeSpan.FromDays(3);
+                    c.RenewDaysInAdvance = TimeSpan.FromDays(10);
 //                    c.RenewalCheckPeriod = TimeSpan.FromSeconds(30);
 #if DEBUG
                     c.UseStagingServer = true;
 #endif
                 })
-                .PersistDataToDirectory(new DirectoryInfo(Path.Combine(Program.DataPath,"certs")),null);
-
+                .PersistDataToDirectory(new DirectoryInfo(Path.Combine(Program.DataPath, "certs")), null);
+            }
         //    services.AddControllers();
          //   services.AddRouting();
 

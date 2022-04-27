@@ -13,8 +13,8 @@ namespace AccuTest
        
         public static async Task Main(string[] args)
         {
-            //GRPCClient = new AccuBotCommon.AccuBotClient("https://localhost:5001");
-            GRPCClient = new AccuBotCommon.AccuBotClient("https://red2.logicethos.com");
+            GRPCClient = new AccuBotCommon.AccuBotClient("https://localhost:5001");
+           // GRPCClient = new AccuBotCommon.AccuBotClient("https://red2.logicethos.com");
             var headers = GRPCClient.Connect();
 
           //  Networks.Test();
