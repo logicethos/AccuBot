@@ -26,7 +26,8 @@ namespace AccuBot
         public static Proto.API.Settings Settings;
         public static string DataPath { get; private set; } 
         public static string DataPathWWW { get; private set; }
-        public static string DomainName { get; private set; }
+        public static string[] DomainNames { get; private set; }
+        private static int HttpsPort;
         
         static public DateTime AppStarted = DateTime.UtcNow;
         static public clsBotClient Bot;
@@ -89,7 +90,7 @@ namespace AccuBot
         {
             
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
+                .MinimumLevel.Information()
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
               //  .WriteTo.File("logfile.log", rollingInterval: RollingInterval.Day)
@@ -97,7 +98,9 @@ namespace AccuBot
 
             DataPath = Environment.GetEnvironmentVariable("ACCUBOT_DATA", EnvironmentVariableTarget.Process) ?? "data";
             DataPathWWW = Environment.GetEnvironmentVariable("ACCUBOT_WWW", EnvironmentVariableTarget.Process) ?? "www";
-            DomainName = Environment.GetEnvironmentVariable("ACCUBOT_DOMAIN", EnvironmentVariableTarget.Process);
+            var DomainName = Environment.GetEnvironmentVariable("ACCUBOT_DOMAIN", EnvironmentVariableTarget.Process);
+            if (!String.IsNullOrEmpty(DomainName)) DomainNames = DomainName.Split(new[] { ' ', ',', ';' }, StringSplitOptions.TrimEntries|StringSplitOptions.RemoveEmptyEntries);
+            int.TryParse(Environment.GetEnvironmentVariable("ACCUBOT_HTTPS", EnvironmentVariableTarget.Process) ?? "0",out HttpsPort);
             
             
             clsSettings.Load();
@@ -184,26 +187,23 @@ namespace AccuBot
                     clsSSLCertMonitor.HeartbeatCheck();
                   
                    */
-
+                
 
                 WebHostBuilder host;
-                //   .UseUrls("https://localhost:5001")
-                if (!String.IsNullOrEmpty(Program.DomainName))
+                if (DomainNames?.Length > 0)
                 {
-                    host = new clsWebHostBuilder();
-                    host.UseUrls("https://0.0.0.0:443");
+                    host = new clsWebHostBuilder(HttpsPort);
                 }
                 else
                 {
-                    host = new clsWebHostBuilderSelfCert();
-#if !DEBUG
-                host.UseUrls("https://0.0.0.0:443");
-#endif
+                    host = new clsWebHostBuilderSelfCert(HttpsPort);
                 }
 
                 host.UseStartup<Startup>();
                 host.Build().Run();
-
+                
+                Log.Information($"Domain: {DomainName ?? "Not Set"}");
+                Log.Information($"Port: {HttpsPort}");
 
                 ApplicationHold.WaitOne(loopWait);
             }

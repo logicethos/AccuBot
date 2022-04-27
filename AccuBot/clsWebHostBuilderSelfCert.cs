@@ -8,8 +8,9 @@ namespace AccuBot;
 public class clsWebHostBuilderSelfCert :  WebHostBuilder
 {
 
-public clsWebHostBuilderSelfCert()
-    {
+public clsWebHostBuilderSelfCert(int port)
+{
+        if (port == 0) port = 5001;
         this.UseSerilog();
         this.UseKestrel(k =>
         {
@@ -24,7 +25,7 @@ public clsWebHostBuilderSelfCert()
                 };
 
             });
-            k.Listen(IPAddress.Any, 5001,
+            k.Listen(IPAddress.Any, port,
                 options => { options.UseHttps(SelfSignedCertificate.GetSelfSignedCertificate()); });
         });
         

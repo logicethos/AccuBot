@@ -65,12 +65,12 @@ namespace AccuBot
                     .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
             }));
 
-            if (!String.IsNullOrEmpty(Program.DomainName))
+            if (Program.DomainNames?.Length > 0)
             {
             
                 services.AddLettuceEncrypt(c =>
                 {
-                    c.DomainNames = new[] { "red2.logicethos.com" };
+                    c.DomainNames = Program.DomainNames;
                     c.EmailAddress = "stuart@logicethos.com";
                     c.AcceptTermsOfService = true;
                     c.RenewDaysInAdvance = TimeSpan.FromDays(10);

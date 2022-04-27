@@ -8,10 +8,11 @@ namespace AccuBot;
 public class clsWebHostBuilder :  WebHostBuilder
 {
 
-public clsWebHostBuilder()
+public clsWebHostBuilder(int port)
 {
+    if (port == 0) port = 443;
     this.UseSerilog();
-    this.UseUrls("https://0.0.0.0:443");
+    this.UseUrls($"https://0.0.0.0:{port}");
     this.UseKestrel(k =>
             {
                 var appServices = k.ApplicationServices;
