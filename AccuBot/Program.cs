@@ -35,7 +35,7 @@ namespace AccuBot
         static public clsNodeGroupProtoDictionaryShadow NodeGroupProtoDictionaryShadow;
         
         static public Proto.API.NetworkStatus networkStatus;
-        
+        static public DockerManager DockerManager;
 
         static public clsAlarmManager AlarmManager = new clsAlarmManager();
         
@@ -98,6 +98,9 @@ namespace AccuBot
             
             
             clsSettings.Load();
+
+            DockerManager = new DockerManager();
+            
 
             try
             {

@@ -33,7 +33,10 @@ namespace AccuBot.DiscordBot.Commands
                         Program.SetRunState(Program.enumRunState.Restart);
                         break;
                     case "update":
-                        Program.SetRunState(Program.enumRunState.Update);
+                        if (commands.Length > 2 && commands[2] == "www")
+                            Program.DockerManager.UpdateWWW();
+                        else
+                            Program.SetRunState(Program.enumRunState.Update);
                         break;
                     case "exit":
                         Program.SetRunState(Program.enumRunState.Stop);

@@ -25,9 +25,8 @@ static public class Dashboard
             sw.Start();
             while (await response.ResponseStream.MoveNext(CancellationToken.None))
             {
-                Console.WriteLine($"sw: {sw.Elapsed.Milliseconds}");
-                Console.WriteLine($"Height: {response.ResponseStream.Current.Height}");
-                Console.WriteLine($"AverageTime: {response.ResponseStream.Current.AverageTime}");
+                Console.WriteLine($"{response.ResponseStream.Current.NetworkID} Height: {response.ResponseStream.Current.Height} AverageTime: {response.ResponseStream.Current.AverageTime} sw: {sw.Elapsed.Milliseconds}");
+                
                 if (++count == 10) break;
             }
             sw.Stop();
@@ -42,11 +41,7 @@ static public class Dashboard
             sw.Start();
             while (await response2.ResponseStream.MoveNext())
             {
-                Console.WriteLine($"sw: {sw.Elapsed.Milliseconds}");
-                Console.WriteLine($"Height: {response2.ResponseStream.Current.Height}");
-                Console.WriteLine($"Ping: {response2.ResponseStream.Current.Ping}");
-                Console.WriteLine($"Version: {response2.ResponseStream.Current.Version}");
-                Console.WriteLine($"NodeID: {response2.ResponseStream.Current.NodeID}");
+                Console.WriteLine($"{response2.ResponseStream.Current.NodeID}   Height: {response2.ResponseStream.Current.Height} Ping: {response2.ResponseStream.Current.Ping} Version: {response2.ResponseStream.Current.Version} NodeID: {response2.ResponseStream.Current.NodeID} sw: {sw.Elapsed.Milliseconds}");
                 if (++count == 10) break;
             }
             sw.Stop();

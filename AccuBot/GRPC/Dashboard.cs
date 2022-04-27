@@ -60,12 +60,8 @@ public partial class ApiService
             await Task.Delay(10);
             Console.WriteLine("NetworkStatusStream started");
             //context.CancellationToken.
-            var sw = new Stopwatch();
-            sw.Start();
             while (!context.CancellationToken.IsCancellationRequested)
             {
-                Console.WriteLine($"sw1: {sw.ElapsedMilliseconds}");
-                
                 height++;
                 foreach (var network in Program.NetworkProtoDictionaryShadow.ManagerList)
                 {
@@ -76,11 +72,11 @@ public partial class ApiService
                         Height = height,
                         AverageTime = 1+(float)random.NextDouble()
                     });
+                    await Task.Delay((int)request.Milliseconds / Program.NetworkProtoDictionaryShadow.ManagerList.ProtoRepeatedField.Count, context.CancellationToken);
                 }
-                await Task.Delay((int)request.Milliseconds, context.CancellationToken);
+
             }
             Console.WriteLine($"NetworkStatusStream End CanRequest: {context.CancellationToken.IsCancellationRequested}");
-            Console.WriteLine($"sw3: {sw.ElapsedMilliseconds}");
             ;
         }
         catch (TaskCanceledException)

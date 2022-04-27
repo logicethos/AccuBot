@@ -1,6 +1,8 @@
 using System.Net.Http.Json;
+using System.Text;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using Serilog;
 
 namespace AccuBot;
 
@@ -14,6 +16,13 @@ public class DockerManager : IDisposable
         FromImage = "containrrr/watchtower",
         Tag = "latest",
     };
+    
+    ImagesCreateParameters AccubotClientImage = new ImagesCreateParameters
+    {
+        FromImage = "registry.gitlab.com/accumulatenetwork/accubot-client",
+        Tag = "latest",
+    };
+    
     
     public String DockerID { get; private set; }
     public String DockerName { get; private set; } = "AccuBot";
@@ -76,8 +85,6 @@ public class DockerManager : IDisposable
     {
         try
         {
-            
-            
             //Pull Image
             await client.Images.CreateImageAsync(watchtowerImage, new AuthConfig(), new Progress());
             
@@ -103,7 +110,7 @@ public class DockerManager : IDisposable
             
             //Create Watchtower container
             var result = await client.Containers.CreateContainerAsync(runParams);
-
+            
             Console.WriteLine($"CreateContainerAsync: {result}");
             foreach (var warn in result.Warnings)
             {
@@ -119,6 +126,76 @@ public class DockerManager : IDisposable
             Console.WriteLine(e);
         }
     }
+
+    public async void UpdateWWW()
+    {
+        try
+        {
+            //Pull Image
+            await client.Images.CreateImageAsync(AccubotClientImage, new AuthConfig(), new Progress());
+            
+            //Set Watchtower container Run Parameters
+            var runParams = new CreateContainerParameters
+            {
+                Name = null,
+                Env = null,
+                Cmd = null,
+                ArgsEscaped = false,
+                Image = AccubotClientImage.FromImage,
+                Entrypoint = null,
+                Labels = null,
+                HostConfig = new HostConfig()
+                {
+                    Binds = new List<string>()
+                    {
+                        "accubot-www:/app/build/web"
+                    },
+                    AutoRemove = true
+                }
+            };
+            
+            //Create accubot www builder container
+            var result = await client.Containers.CreateContainerAsync(runParams);
+
+            Console.WriteLine($"CreateContainerAsync: {result}");
+            foreach (var warn in result.Warnings)
+            {
+                Console.WriteLine($"Warning: {warn}");
+            }
+            //Run AccubotClient
+            var result2 = await client.Containers.StartContainerAsync(result.ID, new ContainerStartParameters());
+            Console.WriteLine($"StartContainerAsync: {result2}");
+
+            ReadLogs(result.ID);
+            Console.WriteLine($"StartContainerAsync: Complete");
+
+        }catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    private async Task ReadLogs(string containerId)
+    {
+        var parameters = new ContainerLogsParameters
+        {
+            ShowStdout = true,
+            ShowStderr = true
+        };
+            
+        var logStream = await client?.Containers?.GetContainerLogsAsync(containerId, parameters, default);
+        if (logStream != null)
+        {
+            using (var reader = new StreamReader(logStream, new UTF8Encoding(false)))
+            {
+                while (!reader.EndOfStream)
+                {
+                    Log.Information(await reader.ReadLineAsync());
+                }
+            }
+        }
+    }
+
 
     public void Dispose()
     {
