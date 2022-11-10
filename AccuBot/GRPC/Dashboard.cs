@@ -25,7 +25,7 @@ public partial class ApiService
             {
                 Console.WriteLine("NodeStatusStream next");
                 height++;
-                foreach (var node in Program.NodeProtoDictionaryShadow.ManagerList)
+                foreach (var node in Program.NodeProtoDictionaryShadow)
                 {
                     await responseStream.WriteAsync(new NodeStatus
                     {
@@ -35,7 +35,7 @@ public partial class ApiService
                         Ping = 5 * random.NextSingle()
                     });
                     Log.Information($"{node.Key}");
-                    await Task.Delay((int)request.Milliseconds / Program.NodeProtoDictionaryShadow.ManagerList.ProtoRepeatedField.Count, context.CancellationToken);
+                    await Task.Delay((int)request.Milliseconds / Program.NodeProtoDictionaryShadow.Count, context.CancellationToken);
                 }
             }
             Console.WriteLine("NodeStatusStream End");
@@ -63,7 +63,7 @@ public partial class ApiService
             while (!context.CancellationToken.IsCancellationRequested)
             {
                 height++;
-                foreach (var network in Program.NetworkProtoDictionaryShadow.ManagerList)
+                foreach (var network in Program.NetworkProtoDictionaryShadow.NetworkShadowList)
                 {
                     Console.WriteLine("Send");
                     await responseStream.WriteAsync(new NetworkStatus
@@ -72,7 +72,7 @@ public partial class ApiService
                         Height = height,
                         AverageTime = 1+(float)random.NextDouble()
                     });
-                    await Task.Delay((int)request.Milliseconds / Program.NetworkProtoDictionaryShadow.ManagerList.ProtoRepeatedField.Count, context.CancellationToken);
+                    await Task.Delay((int)request.Milliseconds / Program.NetworkProtoDictionaryShadow.NetworkShadowList.Count, context.CancellationToken);
                 }
 
             }

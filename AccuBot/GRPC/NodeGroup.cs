@@ -14,19 +14,18 @@ public partial class ApiService
 {
      public override Task<MsgReply> NodeGroupSet(NodeGroup group, ServerCallContext context)
     {
-        MsgReply msgReply;
+        var msgReply = Program.NodeGroupProtoDictionaryShadow.AddUpdate(group);
 
-        if (group.NodeGroupID == 0) //id not set, so new group
-            msgReply = Program.NodeGroupProtoDictionaryShadow.Add(group);
-        else
-            msgReply = Program.NodeGroupProtoDictionaryShadow.Update(group);
-        
         return Task.FromResult(msgReply);
     }
 
     public override Task<NodeGroupList> NodeGroupListGet(Empty request, ServerCallContext context)
     {
-        return Task.FromResult(Program.NodeGroupProtoDictionaryShadow.ProtoWrapper);
+
+        var proto = new NodeGroupList();
+        Program.NodeGroupProtoDictionaryShadow.NodeGroupShadow.PopulateRepeatedField(proto.NodeGroup);
+        return Task.FromResult(proto);
+
     }
 
     public override Task<MsgReply> NodeGroupDelete(ID32 nodeGroupID, ServerCallContext context)

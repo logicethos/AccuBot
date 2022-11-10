@@ -13,18 +13,20 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Docker.DotNet" Version="3.125.5" />
-      <PackageReference Include="DSharpPlus" Version="4.1.0" />
-      <PackageReference Include="Grpc.AspNetCore" Version="2.42.0" />
-      <PackageReference Include="Grpc.AspNetCore.Web" Version="2.43.0" />
-      <PackageReference Include="LettuceEncrypt" Version="1.1.2" />
+      <PackageReference Include="ConsoleServer" Version="1.0.25" />
+      <PackageReference Include="ConsoleServerDocker" Version="1.0.0" />
+      <PackageReference Include="Docker.DotNet" Version="3.125.12" />
+      <PackageReference Include="DSharpPlus" Version="4.2.0" />
+      <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
+      <PackageReference Include="Grpc.AspNetCore.Web" Version="2.49.0" />
+      <PackageReference Include="LettuceEncrypt" Version="1.2.0" />
       <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
-      <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.314" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
-      <PackageReference Include="Serilog" Version="2.10.0" />
-      <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
-      <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
-      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.16.0" />
+      <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.315" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10" />
+      <PackageReference Include="Serilog" Version="2.12.0" />
+      <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -50,6 +52,18 @@
       <None Include="DiscordBot\clsAlarm.cs" />
       <Compile Remove="DiscordBot\Commands\clsMTR.cs" />
       <None Include="DiscordBot\Commands\clsMTR.cs" />
+      <Compile Remove="ProtoManagerBaseClasses\NOT USED\clsProtoDictionary.cs" />
+      <None Include="ProtoManagerBaseClasses\NOT USED\clsProtoDictionary.cs" />
+      <Compile Remove="ProtoManagerBaseClasses\AProtoDictionaryShadow.cs" />
+      <None Include="ProtoManagerBaseClasses\AProtoDictionaryShadow.cs" />
+      <Compile Remove="ProtoManagerBaseClasses\clsProtoDictionaryShadow.cs" />
+      <None Include="ProtoManagerBaseClasses\clsProtoDictionaryShadow.cs" />
+      <Compile Remove="ProtoManagerBaseClasses\IManager.cs" />
+      <None Include="ProtoManagerBaseClasses\IManager.cs" />
+      <Compile Remove="ProtoManagerBaseClasses\IProtoShadowClass.cs" />
+      <None Include="ProtoManagerBaseClasses\IProtoShadowClass.cs" />
+      <Compile Remove="ProtoManagerBaseClasses\ProtoPubSub.cs" />
+      <None Include="ProtoManagerBaseClasses\ProtoPubSub.cs" />
     </ItemGroup>
 
 </Project>

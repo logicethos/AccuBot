@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Accubot;
 using AccuBot.Monitoring;
 using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
@@ -187,7 +188,8 @@ namespace AccuBot
                     clsSSLCertMonitor.HeartbeatCheck();
                   
                    */
-                
+                Log.Information($"Domain: {DomainName ?? "Not Set"}");
+                Log.Information($"Port: {HttpsPort}");
 
                 WebHostBuilder host;
                 if (DomainNames?.Length > 0)
@@ -202,9 +204,6 @@ namespace AccuBot
                 host.UseStartup<Startup>();
                 host.Build().Run();
                 
-                Log.Information($"Domain: {DomainName ?? "Not Set"}");
-                Log.Information($"Port: {HttpsPort}");
-
                 ApplicationHold.WaitOne(loopWait);
             }
        

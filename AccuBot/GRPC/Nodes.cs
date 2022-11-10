@@ -14,19 +14,19 @@ public partial class ApiService
 {
     public override Task<MsgReply> NodeSet(Node node, ServerCallContext context)
     {
-        MsgReply msgReply;
 
-        if (node.NodeID == 0) //id not set, so new network
-            msgReply = Program.NodeProtoDictionaryShadow.Add(node);
-        else
-            msgReply = Program.NodeProtoDictionaryShadow.Update(node);
-        
+       var msgReply = Program.NodeProtoDictionaryShadow.AddUpdate(node);
+
         return Task.FromResult(msgReply);
     }
     
     public override Task<Proto.API.NodeList> NodeListGet(Empty request, ServerCallContext context)
     {
-        return Task.FromResult(Program.NodeProtoDictionaryShadow.ProtoWrapper);
+
+        var proto = new NodeList();
+        Program.NodeProtoDictionaryShadow.PopulateRepeatedField(proto.Nodes);
+        return Task.FromResult(proto);
+
     }
 
     public override Task<MsgReply> NodeDelete(ID32 nodeID, ServerCallContext context)

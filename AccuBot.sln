@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccuBotCommon", "AccuBotCom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccuTest", "AccuTest\AccuTest.csproj", "{10E19512-22AB-4149-8EF6-0D41D9D65416}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleServerDocker", "ConsoleServerDocker\ConsoleServerDocker\ConsoleServerDocker.csproj", "{C02AE5C2-4048-45E1-A874-70FD5A6FB2F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{10E19512-22AB-4149-8EF6-0D41D9D65416}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10E19512-22AB-4149-8EF6-0D41D9D65416}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10E19512-22AB-4149-8EF6-0D41D9D65416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C02AE5C2-4048-45E1-A874-70FD5A6FB2F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C02AE5C2-4048-45E1-A874-70FD5A6FB2F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C02AE5C2-4048-45E1-A874-70FD5A6FB2F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C02AE5C2-4048-45E1-A874-70FD5A6FB2F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

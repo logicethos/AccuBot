@@ -9,11 +9,12 @@ using AccuBot.Monitoring;
 using Grpc.Core;
 using Microsoft.Extensions.Hosting;
 using Proto.API;
+using ProtoHelper;
 
 
 namespace Accubot 
 {
-    public class clsNode : IProtoShadowClass<Proto.API.Node> 
+    public class clsNode : IProtoShadowClass<UInt32,Proto.API.Node>
     {
     
         clsRollingAverage LatencyList = new clsRollingAverage(10);
@@ -22,12 +23,11 @@ namespace Accubot
         public clsNode(Proto.API.Node nodeProto)
         {
             ProtoMessage = nodeProto;
-            NodeGroup = Program.NodeGroupProtoDictionaryShadow.ManagerList[ProtoMessage.NodeGroupID];
-            Network = Program.NetworkProtoDictionaryShadow.ManagerList[NodeGroup.ProtoMessage.NetworkID];
+            NodeGroup = Program.NodeGroupProtoDictionaryShadow.NodeGroupShadow[ProtoMessage.NodeGroupID];
+            Network = Program.NetworkProtoDictionaryShadow.NetworkShadowList[NodeGroup.ProtoMessage.NetworkID];
             //TODO check for null
         }
-        
-        
+
         
         public Proto.API.Node ProtoMessage { get; init; }
         public Proto.API.NodeStatus NodeStatus { get; private set; }

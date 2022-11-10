@@ -3,9 +3,11 @@ using System.Linq;
 using System.Text;
 using Proto.API;
 
+using ProtoHelper;
+
 namespace AccuBot
 {
-    public class clsNetwork : IProtoShadowClass<Proto.API.Network>
+    public class clsNetwork : IProtoShadowClass<UInt32,Proto.API.Network>
     {
         public Proto.API.Network ProtoMessage {get; init;}
         
@@ -87,7 +89,7 @@ namespace AccuBot
         {
             get
             {
-                return (uint)Program.NodeProtoDictionaryShadow.ManagerList.Count(x=>x.Value.Network == this && x.Value.ProtoMessage.Monitor);
+                return (uint)Program.NodeProtoDictionaryShadow.Count(x=>x.Value.Network == this && x.Value.ProtoMessage.Monitor);
             }
         }
         

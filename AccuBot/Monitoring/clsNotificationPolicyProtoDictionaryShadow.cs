@@ -2,32 +2,83 @@ using Accubot;
 using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Proto.API;
+using ProtoHelper;
 
 namespace AccuBot.Monitoring;
 
-public class clsNotificationPolicyProtoDictionaryShadow : clsProtoDictionaryShadow<clsNotificationPolicy,Proto.API.NotificationPolicy,Proto.API.NotificationPolicyList>
+using TIndex = UInt32;
+using TProto = Proto.API.NotificationPolicy;
+using TProtoS = clsNotificationPolicy;
+using TProtoList = Proto.API.NotificationPolicyList;
+
+public class clsNotificationPolicyProtoDictionaryShadow
 {
 
+    public clsProtoShadowTableIndexed<TProtoS, TProto, TIndex> NotificationPolicy;
+
+    private Action<TProto, TProto> MapFields = null;
     
-    public clsNotificationPolicyProtoDictionaryShadow(): base(Path.Combine(Program.DataPath, "notificationPolicyList"),
-        x=>x.NotificationPolicyList_,
-        x=>x.NotifictionID,
-        (x, y) => x.NotifictionID = y)
+    public clsNotificationPolicyProtoDictionaryShadow()
     {
-        base.MapFields = new Action<NotificationPolicy, NotificationPolicy>((origMessage, newMessage) =>
-        {
-            origMessage.Name = newMessage.Name;
-            origMessage.Call = newMessage.Call;
-            origMessage.Discord = newMessage.Discord;
-        });
+        var indexSelector = new Func<TProto, IComparable<TIndex>>(x => x.NotifictionID); //Index field of our proto message
+        var indexSelectorWrite = new Action<TProto, TIndex>((x, y) => x.NotifictionID = y); //Write action for index field.
+
+        NotificationPolicy = new clsProtoShadowTableIndexed<TProtoS, TProto, TIndex>(indexSelector,indexSelectorWrite);
+
         Load();
     }
 
 
+    public TProtoS Add(TProto notificationPolicy)
+    {
+        return NotificationPolicy.Add(notificationPolicy, new clsNotificationPolicy(notificationPolicy));
+    }
+
+    public bool Update(TProto nodeGroup)
+    {
+        return NotificationPolicy.Update(nodeGroup,MapFields);
+    }
+
+
+    public MsgReply Delete(TIndex id)
+    {
+        var msgReply = new MsgReply();
+        msgReply.Status = NotificationPolicy.Remove(id) ? MsgReply.Types.Status.Ok : MsgReply.Types.Status.Fail;
+        return msgReply;
+    }
+
+
+    public MsgReply AddUpdate(NotificationPolicy notificationPolicy)
+    {
+        var msgReply = new MsgReply();
+
+        if (notificationPolicy.NotifictionID == 0)
+        {
+            var shadowClass = Add(notificationPolicy);
+            if (shadowClass == null)
+            {
+                msgReply.Status = MsgReply.Types.Status.Fail;
+            }
+            else
+            {
+                msgReply.Status = MsgReply.Types.Status.Ok;
+                msgReply.NewID32 = shadowClass.ID;
+            }
+        }
+        else
+        {
+            msgReply.Status = Update(notificationPolicy) ? MsgReply.Types.Status.Ok : MsgReply.Types.Status.Fail;
+        }
+
+        return msgReply;
+    }
+
     public void Load()
     {
-        base.Load(new Func<NotificationPolicyList>(() =>
-        {
+        //Path.Combine(Program.DataPath, "notificationPolicyList")
+
+       // base.Load(new Func<NotificationPolicyList>(() =>
+       // {
             var notificationPolicyList = new NotificationPolicyList();
             notificationPolicyList.NotificationPolicyList_.Add(new NotificationPolicy
             {
@@ -58,11 +109,10 @@ public class clsNotificationPolicyProtoDictionaryShadow : clsProtoDictionaryShad
                 Call = 0
             });
             
-            return notificationPolicyList;
-        }));
+         //   return notificationPolicyList;
+        //}));
         
 
     }
-    
-    
+
 }

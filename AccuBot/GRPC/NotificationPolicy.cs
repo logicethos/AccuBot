@@ -12,22 +12,20 @@ namespace AccuBot.GRPC;
 
 public partial class ApiService 
 {
-     public override Task<NotificationPolicyList> NotificationPolicyListGet(Empty request, ServerCallContext context)
-    {
-        return Task.FromResult(Program.NotificationPolicyProtoDictionaryShadow.ProtoWrapper);
-    }
-
     public override Task<MsgReply> NotificationPolicySet(NotificationPolicy notificationPolicy, ServerCallContext context)
     {
-        MsgReply msgReply;
+        var msgReply = Program.NotificationPolicyProtoDictionaryShadow.AddUpdate(notificationPolicy);
 
-        if (notificationPolicy.NotifictionID == 0) //id not set, so new network
-            msgReply = Program.NotificationPolicyProtoDictionaryShadow.Add(notificationPolicy);
-        else
-            msgReply = Program.NotificationPolicyProtoDictionaryShadow.Update(notificationPolicy);
-        
         return Task.FromResult(msgReply);
     }
+
+    public override Task<NotificationPolicyList> NotificationPolicyListGet(Empty request, ServerCallContext context)
+    {
+        var proto = new NotificationPolicyList();
+        Program.NotificationPolicyProtoDictionaryShadow.NotificationPolicy.PopulateRepeatedField(proto.NotificationPolicyList_);
+        return Task.FromResult(proto);
+    }
+
 
     public override Task<MsgReply> NotificationPolicyDelete(ID32 notificationPolicyID, ServerCallContext context)
     {

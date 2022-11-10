@@ -1,0 +1,3 @@
+[submodule "ConsoleServerDocker"]
+	path = ConsoleServerDocker
+	url = git@gitlab.com:logicethos/ConsoleServerDocker.git
