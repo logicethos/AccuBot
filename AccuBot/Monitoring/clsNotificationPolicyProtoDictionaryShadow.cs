@@ -11,19 +11,16 @@ using TProto = Proto.API.NotificationPolicy;
 using TProtoS = clsNotificationPolicy;
 using TProtoList = Proto.API.NotificationPolicyList;
 
-public class clsNotificationPolicyProtoDictionaryShadow
+public class clsNotificationPolicyProtoDictionaryShadow : clsProtoShadowTableIndexed<TProtoS, TProto, TIndex>
 {
 
-    public clsProtoShadowTableIndexed<TProtoS, TProto, TIndex> NotificationPolicy;
 
     private Action<TProto, TProto> MapFields = null;
     
-    public clsNotificationPolicyProtoDictionaryShadow()
+    public clsNotificationPolicyProtoDictionaryShadow(): base(
+                        new Func<TProto, IComparable<TIndex>>(x => x.NotifictionID)
+                       ,new Action<TProto, TIndex>((x, y) => x.NotifictionID = y))
     {
-        var indexSelector = new Func<TProto, IComparable<TIndex>>(x => x.NotifictionID); //Index field of our proto message
-        var indexSelectorWrite = new Action<TProto, TIndex>((x, y) => x.NotifictionID = y); //Write action for index field.
-
-        NotificationPolicy = new clsProtoShadowTableIndexed<TProtoS, TProto, TIndex>(indexSelector,indexSelectorWrite);
 
         Load();
     }
@@ -31,19 +28,19 @@ public class clsNotificationPolicyProtoDictionaryShadow
 
     public TProtoS Add(TProto notificationPolicy)
     {
-        return NotificationPolicy.Add(notificationPolicy, new clsNotificationPolicy(notificationPolicy));
+        return base.Add(notificationPolicy, new clsNotificationPolicy(notificationPolicy));
     }
 
     public bool Update(TProto nodeGroup)
     {
-        return NotificationPolicy.Update(nodeGroup,MapFields);
+        return base.Update(nodeGroup,MapFields);
     }
 
 
     public MsgReply Delete(TIndex id)
     {
         var msgReply = new MsgReply();
-        msgReply.Status = NotificationPolicy.Remove(id) ? MsgReply.Types.Status.Ok : MsgReply.Types.Status.Fail;
+        msgReply.Status = base.Remove(id) ? MsgReply.Types.Status.Ok : MsgReply.Types.Status.Fail;
         return msgReply;
     }
 

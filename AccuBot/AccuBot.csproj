@@ -53,17 +53,11 @@
       <Compile Remove="DiscordBot\Commands\clsMTR.cs" />
       <None Include="DiscordBot\Commands\clsMTR.cs" />
       <Compile Remove="ProtoManagerBaseClasses\NOT USED\clsProtoDictionary.cs" />
-      <None Include="ProtoManagerBaseClasses\NOT USED\clsProtoDictionary.cs" />
       <Compile Remove="ProtoManagerBaseClasses\AProtoDictionaryShadow.cs" />
-      <None Include="ProtoManagerBaseClasses\AProtoDictionaryShadow.cs" />
       <Compile Remove="ProtoManagerBaseClasses\clsProtoDictionaryShadow.cs" />
-      <None Include="ProtoManagerBaseClasses\clsProtoDictionaryShadow.cs" />
       <Compile Remove="ProtoManagerBaseClasses\IManager.cs" />
-      <None Include="ProtoManagerBaseClasses\IManager.cs" />
       <Compile Remove="ProtoManagerBaseClasses\IProtoShadowClass.cs" />
-      <None Include="ProtoManagerBaseClasses\IProtoShadowClass.cs" />
       <Compile Remove="ProtoManagerBaseClasses\ProtoPubSub.cs" />
-      <None Include="ProtoManagerBaseClasses\ProtoPubSub.cs" />
     </ItemGroup>
 
 </Project>

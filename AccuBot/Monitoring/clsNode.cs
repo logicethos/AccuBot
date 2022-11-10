@@ -23,8 +23,8 @@ namespace Accubot
         public clsNode(Proto.API.Node nodeProto)
         {
             ProtoMessage = nodeProto;
-            NodeGroup = Program.NodeGroupProtoDictionaryShadow.NodeGroupShadow[ProtoMessage.NodeGroupID];
-            Network = Program.NetworkProtoDictionaryShadow.NetworkShadowList[NodeGroup.ProtoMessage.NetworkID];
+            NodeGroup = Program.NodeGroupProtoDictionaryShadow[ProtoMessage.NodeGroupID];
+            Network = Program.NetworkProtoDictionaryShadow[NodeGroup.ProtoMessage.NetworkID];
             //TODO check for null
         }
 

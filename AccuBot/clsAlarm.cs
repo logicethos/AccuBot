@@ -44,14 +44,14 @@ namespace AccuBot
             switch(alarmType)
             {
                 case enumAlarmType.NoResponse:
-                    Program.NotificationPolicyProtoDictionaryShadow.NotificationPolicy.TryGetValue(Node.NodeGroup.ProtoMessage.PingNotifictionID,out notificationPolicy); break;
+                    Program.NotificationPolicyProtoDictionaryShadow.TryGetValue(Node.NodeGroup.ProtoMessage.PingNotifictionID,out notificationPolicy); break;
                 case enumAlarmType.Height:
-                    Program.NotificationPolicyProtoDictionaryShadow.NotificationPolicy.TryGetValue(Node.NodeGroup.ProtoMessage.HeightNotifictionID,out notificationPolicy); break;
+                    Program.NotificationPolicyProtoDictionaryShadow.TryGetValue(Node.NodeGroup.ProtoMessage.HeightNotifictionID,out notificationPolicy); break;
                 case enumAlarmType.Latency:
-                    Program.NotificationPolicyProtoDictionaryShadow.NotificationPolicy.TryGetValue(Node.NodeGroup.ProtoMessage.LatencyNotifictionID,out notificationPolicy); break;
+                    Program.NotificationPolicyProtoDictionaryShadow.TryGetValue(Node.NodeGroup.ProtoMessage.LatencyNotifictionID,out notificationPolicy); break;
                 case enumAlarmType.Error:
                 case enumAlarmType.Network:
-                    Program.NotificationPolicyProtoDictionaryShadow.NotificationPolicy.TryGetValue(Node.NodeGroup.ProtoMessage.NetworkID,out notificationPolicy); break;
+                    Program.NotificationPolicyProtoDictionaryShadow.TryGetValue(Node.NodeGroup.ProtoMessage.NetworkID,out notificationPolicy); break;
             }
         }
         

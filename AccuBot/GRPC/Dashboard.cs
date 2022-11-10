@@ -63,7 +63,7 @@ public partial class ApiService
             while (!context.CancellationToken.IsCancellationRequested)
             {
                 height++;
-                foreach (var network in Program.NetworkProtoDictionaryShadow.NetworkShadowList)
+                foreach (var network in Program.NetworkProtoDictionaryShadow)
                 {
                     Console.WriteLine("Send");
                     await responseStream.WriteAsync(new NetworkStatus
@@ -72,7 +72,7 @@ public partial class ApiService
                         Height = height,
                         AverageTime = 1+(float)random.NextDouble()
                     });
-                    await Task.Delay((int)request.Milliseconds / Program.NetworkProtoDictionaryShadow.NetworkShadowList.Count, context.CancellationToken);
+                    await Task.Delay((int)request.Milliseconds / Program.NetworkProtoDictionaryShadow.Count, context.CancellationToken);
                 }
 
             }

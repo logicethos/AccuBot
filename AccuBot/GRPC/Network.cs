@@ -22,7 +22,7 @@ public partial class ApiService
     public override Task<NetworkList> NetworkListGet(Empty request, ServerCallContext context)
     {
         var proto = new NetworkList();
-        Program.NetworkProtoDictionaryShadow.NetworkShadowList.PopulateRepeatedField(proto.Network);
+        Program.NetworkProtoDictionaryShadow.PopulateRepeatedField(proto.Network);
         return Task.FromResult(proto);
     }
 

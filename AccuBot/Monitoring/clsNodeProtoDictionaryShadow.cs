@@ -16,10 +16,6 @@ using TProtoList = Proto.API.NodeList;
 //<Proto.API.NodeList, Proto.API.Node,clsNode,UInt32>
 
 public class clsNodeProtoDictionaryShadow : clsProtoShadowTableIndexed<TProtoS, TProto, TIndex>
-    /*where TProtoList : IMessage
-    where TProto : IMessage
-    where TProtoS : IProtoShadowClass<TIndex,TProto>
-    where TIndex : class*/
 {
 
     public ProtoPubSub<Proto.API.NodeStatus> NodeStatusSubSub = new ProtoPubSub<NodeStatus>();

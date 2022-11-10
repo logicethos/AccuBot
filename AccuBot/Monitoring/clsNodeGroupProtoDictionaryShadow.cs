@@ -12,14 +12,14 @@ using TProto = Proto.API.NodeGroup;
 using TProtoS = clsNodeGroup;
 using TProtoList = Proto.API.NodeGroupList;
 
-public class clsNodeGroupProtoDictionaryShadow
+public class clsNodeGroupProtoDictionaryShadow : clsProtoShadowTableIndexed<TProtoS, TProto, TIndex>
 {
-
-    public clsProtoShadowTableIndexed<TProtoS, TProto, TIndex> NodeGroupShadow;
 
     private Action<TProto, TProto> MapFields = null;
 
-    public clsNodeGroupProtoDictionaryShadow()
+    public clsNodeGroupProtoDictionaryShadow() : base(
+        new Func<TProto, IComparable<TIndex>>(x => x.NodeGroupID)
+        ,new Action<TProto, TIndex>((x, y) => x.NodeGroupID = y))
     {
 
         MapFields = new Action<TProto, TProto>((origMessage, newMessage) =>
@@ -30,11 +30,6 @@ public class clsNodeGroupProtoDictionaryShadow
             origMessage.LatencyNotifictionID = newMessage.LatencyNotifictionID;
             origMessage.PingNotifictionID = newMessage.PingNotifictionID;
         });
-
-        var indexSelector = new Func<TProto, IComparable<TIndex>>(x => x.NodeGroupID); //Index field of our proto message
-        var indexSelectorWrite = new Action<TProto, TIndex>((x, y) => x.NodeGroupID = y); //Write action for index field.
-
-        NodeGroupShadow = new clsProtoShadowTableIndexed<TProtoS, TProto, uint>(indexSelector, indexSelectorWrite);
 
         Load();
     }
@@ -67,19 +62,19 @@ public class clsNodeGroupProtoDictionaryShadow
 
     public TProtoS Add(TProto nodeGroup)
     {
-        return NodeGroupShadow.Add(nodeGroup, new clsNodeGroup(nodeGroup));
+        return base.Add(nodeGroup, new clsNodeGroup(nodeGroup));
     }
 
     public bool Update(TProto nodeGroup)
     {
-        return NodeGroupShadow.Update(nodeGroup,MapFields);
+        return base.Update(nodeGroup,MapFields);
     }
 
 
     public MsgReply Delete(TIndex id)
     {
         var msgReply = new MsgReply();
-        msgReply.Status = NodeGroupShadow.Remove(id) ? MsgReply.Types.Status.Ok : MsgReply.Types.Status.Fail;
+        msgReply.Status = base.Remove(id) ? MsgReply.Types.Status.Ok : MsgReply.Types.Status.Fail;
         return msgReply;
     }
     public void Load()

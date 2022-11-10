@@ -23,7 +23,7 @@ public partial class ApiService
     {
 
         var proto = new NodeGroupList();
-        Program.NodeGroupProtoDictionaryShadow.NodeGroupShadow.PopulateRepeatedField(proto.NodeGroup);
+        Program.NodeGroupProtoDictionaryShadow.PopulateRepeatedField(proto.NodeGroup);
         return Task.FromResult(proto);
 
     }

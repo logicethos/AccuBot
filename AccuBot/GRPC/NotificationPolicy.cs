@@ -22,7 +22,7 @@ public partial class ApiService
     public override Task<NotificationPolicyList> NotificationPolicyListGet(Empty request, ServerCallContext context)
     {
         var proto = new NotificationPolicyList();
-        Program.NotificationPolicyProtoDictionaryShadow.NotificationPolicy.PopulateRepeatedField(proto.NotificationPolicyList_);
+        Program.NotificationPolicyProtoDictionaryShadow.PopulateRepeatedField(proto.NotificationPolicyList_);
         return Task.FromResult(proto);
     }
 
